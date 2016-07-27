@@ -31,13 +31,6 @@ public class Main {
         rs.close();
         stmt.close();
 
-        // delete
-        sql = "DELETE FROM users " +
-            "WHERE id > 10 AND id < 30";
-        stmt = connection.createStatement();
-        stmt.executeUpdate(sql);
-        stmt.close();
-
         // table names
         stmt = connection.createStatement();
         rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables" +
@@ -50,6 +43,13 @@ public class Main {
         tables = Arrays.copyOf(tables, intdex, String[].class);
         System.out.println(Arrays.toString(tables));
         rs.close();
+        stmt.close();
+
+        // delete
+        sql = "DELETE FROM users " +
+            "WHERE id > 10 AND id < 30";
+        stmt = connection.createStatement();
+        stmt.executeUpdate(sql);
         stmt.close();
 
         // update
