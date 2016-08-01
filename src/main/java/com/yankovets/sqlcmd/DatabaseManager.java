@@ -28,17 +28,12 @@ public class DatabaseManager {
         String[] tables = manager.getTableNames();
         System.out.println(Arrays.toString(tables));
 
-        sql = "SELECT * FROM users WHERE id > 5";
-        stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            System.out.println("id:" + rs.getString("id"));
-            System.out.println("name:" + rs.getString("name"));
-            System.out.println("password:" + rs.getString("password"));
-            System.out.println("-----");
-        }
-        rs.close();
-        stmt.close();
+        String tableName = "users";
+
+        DataSet[] result = manager.getTableData(tableName);
+
+        System.out.println(Arrays.toString(result));
+
 
         // delete
         sql = "DELETE FROM users " +
@@ -57,6 +52,35 @@ public class DatabaseManager {
         ps.close();
 
         connection.close();
+    }
+
+    public DataSet[] getTableData(String tableName) throws SQLException {
+        int size = getSize(tableName);
+
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
+        ResultSetMetaData rsmd = rs.getMetaData();
+        DataSet[] result = new DataSet[size];
+        int index = 0;
+        while (rs.next()) {
+            DataSet dataSet = new DataSet();
+            result[index++] = dataSet;
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                dataSet.put(rsmd.getColumnName(i), rs.getObject(i));
+            }
+        }
+        rs.close();
+        stmt.close();
+        return result;
+    }
+
+    private int getSize(final String tableName) throws SQLException {
+        Statement stmt = connection.createStatement();
+        ResultSet rsCount = stmt.executeQuery("SELECT COUNT (*) FROM " + tableName);
+        rsCount.next();
+        int size = rsCount.getInt(1);
+        rsCount.close();
+        return size;
     }
 
     public String[] getTableNames() {
