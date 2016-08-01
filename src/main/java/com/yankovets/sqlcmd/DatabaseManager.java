@@ -1,7 +1,8 @@
 package com.yankovets.sqlcmd;
 
 import java.sql.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Random;
 
 public class DatabaseManager {
 
@@ -17,30 +18,26 @@ public class DatabaseManager {
 
         Connection connection = manager.getConnection();
 
+        String tableName = "users";
+        DataSet data = new DataSet();
+
+        // delete
+        manager.clear(tableName);
+
         // insert
-        String sql = "INSERT INTO users (name, password)" +
-            "VALUES ('Stiven', 'Pupkin')";
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate(sql);
-        stmt.close();
+        data.put("id", 13);
+        data.put("name", "Stiven");
+        data.put("password", "pass");
+        manager.create(data);
 
         // select
         String[] tables = manager.getTableNames();
         System.out.println(Arrays.toString(tables));
 
-        String tableName = "users";
 
         DataSet[] result = manager.getTableData(tableName);
 
         System.out.println(Arrays.toString(result));
-
-
-        // delete
-        sql = "DELETE FROM users " +
-            "WHERE id > 10 AND id < 30";
-        stmt = connection.createStatement();
-        stmt.executeUpdate(sql);
-        stmt.close();
 
         // update
         String sql1 = "UPDATE users SET password = ? WHERE id > 3";
@@ -54,27 +51,32 @@ public class DatabaseManager {
         connection.close();
     }
 
-    public DataSet[] getTableData(String tableName) throws SQLException {
-        int size = getSize(tableName);
+    public DataSet[] getTableData(String tableName) {
+        try {
+            int size = getSize(tableName);
 
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
-        ResultSetMetaData rsmd = rs.getMetaData();
-        DataSet[] result = new DataSet[size];
-        int index = 0;
-        while (rs.next()) {
-            DataSet dataSet = new DataSet();
-            result[index++] = dataSet;
-            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                dataSet.put(rsmd.getColumnName(i), rs.getObject(i));
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            DataSet[] result = new DataSet[size];
+            int index = 0;
+            while (rs.next()) {
+                DataSet dataSet = new DataSet();
+                result[index++] = dataSet;
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                    dataSet.put(rsmd.getColumnName(i), rs.getObject(i));
+                }
             }
+            rs.close();
+            stmt.close();
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new DataSet[0];
         }
-        rs.close();
-        stmt.close();
-        return result;
     }
 
-    private int getSize(final String tableName) throws SQLException {
+    private int getSize(String tableName) throws SQLException {
         Statement stmt = connection.createStatement();
         ResultSet rsCount = stmt.executeQuery("SELECT COUNT (*) FROM " + tableName);
         rsCount.next();
@@ -123,5 +125,39 @@ public class DatabaseManager {
 
     private Connection getConnection() {
         return connection;
+    }
+
+    public void clear(String tableName) {
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate("DELETE FROM " + tableName);
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void create(DataSet input) {
+        try {
+            Statement stmt = connection.createStatement();
+
+            String tableNames = "";
+            for (String name : input.getNames()) {
+                tableNames += name + ",";
+            }
+            tableNames = tableNames.substring(0, tableNames.length() - 1);
+
+            String values = "";
+            for (Object value : input.getValues()) {
+                values += "'" + value.toString() + "'" + ",";
+            }
+            values = values.substring(0, values.length() - 1);
+
+            stmt.executeUpdate("INSERT INTO users (" + tableNames + ")" +
+                "VALUES (" + values + ")");
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
