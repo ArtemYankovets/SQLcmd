@@ -1,6 +1,12 @@
 package com.yankovets.sqlcmd;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -40,13 +46,9 @@ public class DatabaseManager {
         System.out.println(Arrays.toString(result));
 
         // update
-        String sql1 = "UPDATE users SET password = ? WHERE id > 3";
-        PreparedStatement ps = connection.prepareStatement(
-            sql1);
-        String pass = "password_" + new Random().nextInt();
-        ps.setString(1, pass);
-        ps.executeUpdate();
-        ps.close();
+        DataSet data2 = new DataSet();
+        data2.put("name", "StivenEEEE");
+        manager.update(tableName,13, data2);
 
         connection.close();
     }
@@ -141,17 +143,8 @@ public class DatabaseManager {
         try {
             Statement stmt = connection.createStatement();
 
-            String tableNames = "";
-            for (String name : input.getNames()) {
-                tableNames += name + ",";
-            }
-            tableNames = tableNames.substring(0, tableNames.length() - 1);
-
-            String values = "";
-            for (Object value : input.getValues()) {
-                values += "'" + value.toString() + "'" + ",";
-            }
-            values = values.substring(0, values.length() - 1);
+            String tableNames = getNamesFormated(input, "%s,");
+            String values = getValuesFormated(input, "'%s',");
 
             stmt.executeUpdate("INSERT INTO users (" + tableNames + ")" +
                 "VALUES (" + values + ")");
@@ -159,5 +152,44 @@ public class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void update(String tableName, int id, DataSet newValue) {
+        try {
+            String tableNames = getNamesFormated(newValue, "%s = ?,");
+
+            PreparedStatement ps = connection.prepareStatement(
+                "UPDATE " + tableName + " SET " + tableNames + " WHERE id = ?");
+
+            int index = 1;
+            for (Object value : newValue.getValues()) {
+                ps.setObject(index++, value);
+            }
+
+            ps.setInt(index, id);
+            ps.executeUpdate();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getNamesFormated(final DataSet newValue, final String format) {
+        String string = "";
+        for (String name : newValue.getNames()) {
+            string += String.format(format, name);
+        }
+        string = string.substring(0, string.length() - 1);
+        return string;
+    }
+
+    private String getValuesFormated(final DataSet input, final String format) {
+        String values = "";
+        for (Object value : input.getValues()) {
+            values += String.format(format, value);
+        }
+        values = values.substring(0, values.length() - 1);
+        return values;
     }
 }
