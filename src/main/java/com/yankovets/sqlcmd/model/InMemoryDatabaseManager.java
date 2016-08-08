@@ -9,6 +9,7 @@ public class InMemoryDatabaseManager implements DatabaseManager {
     private DataSet[] data = new DataSet[1000];
     private int freeIndex = 0;
 
+    @Override
     public DataSet[] getTableData(String tableName) {
         validateTable(tableName);
         return Arrays.copyOf(data, freeIndex);
@@ -20,25 +21,30 @@ public class InMemoryDatabaseManager implements DatabaseManager {
         }
     }
 
+    @Override
     public String[] getTableNames() {
         return new String[] { TABLE_NAME };
     }
 
+    @Override
     public void connect(String database, String userName, String password) {
         // do nothing
     }
 
+    @Override
     public void clear(String tableName) {
         validateTable(tableName);
         data = new DataSet[1000];
         freeIndex = 0;
     }
 
+    @Override
     public void create(String tableName, DataSet input) {
         validateTable(tableName);
         data[freeIndex++] = input;
     }
 
+    @Override
     public void update(String tableName, int id, DataSet newValue) {
         for (int index = 0; index < freeIndex; index++) {
             if (data[index].get("id") instanceof Integer) {
@@ -47,5 +53,10 @@ public class InMemoryDatabaseManager implements DatabaseManager {
                 }
             }
         }
+    }
+
+    @Override
+    public String[] getTableColumns(String tableName) {
+        return new String[] {"name", "password", "id"};
     }
 }

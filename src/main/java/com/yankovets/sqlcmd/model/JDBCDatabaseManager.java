@@ -13,6 +13,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     private Connection connection;
 
+    @Override
     public DataSet[] getTableData(String tableName) {
         try {
             int size = getSize(tableName);
@@ -47,6 +48,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return size;
     }
 
+    @Override
     public String[] getTableNames() {
         try {
             Statement stmt = connection.createStatement();
@@ -68,6 +70,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
+    @Override
     public void connect(String database, String userName, String password) {
         try {
             Class.forName("org.postgresql.Driver");
@@ -78,6 +81,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
             connection = DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/" + database, userName, password);
         } catch (SQLException e) {
+
             connection = null;
             throw new RuntimeException(String.format("Cant get connection for database:%s, user:%s.",
                     database, userName),
@@ -85,6 +89,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
+    @Override
     public void clear(String tableName) {
         try {
             Statement stmt = connection.createStatement();
@@ -95,6 +100,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
+    @Override
     public void create(String tableName, DataSet input) {
         try {
             Statement stmt = connection.createStatement();
@@ -110,6 +116,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
+    @Override
     public void update(String tableName, int id, DataSet newValue) {
         try {
             String tableNames = getNamesFormated(newValue, "%s = ?,");
@@ -130,6 +137,29 @@ public class JDBCDatabaseManager implements DatabaseManager {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public String[] getTableColumns(String tableName) {
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM information_schema.columns " +
+                    "WHERE table_schema='public' " +
+                    "AND table_name='" + tableName + "'");
+            String[] tables = new String[100];
+            int index = 0;
+            while (rs.next()) {
+                tables[index++] = rs.getString("column_name");
+            }
+            tables = Arrays.copyOf(tables, index, String[].class);
+            rs.close();
+            stmt.close();
+            return tables;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new String[0];
+        }
+    }
+
 
     private String getNamesFormated(DataSet newValue, String format) {
         String string = "";
