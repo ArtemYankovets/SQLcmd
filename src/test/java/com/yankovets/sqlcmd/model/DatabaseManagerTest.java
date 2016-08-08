@@ -1,25 +1,29 @@
-package com.yankovets.sqlcmd;
+package com.yankovets.sqlcmd.model;
 
-import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 
-public class DatabaseManagerTest {
+public abstract class DatabaseManagerTest {
 
     private DatabaseManager manager;
 
     @Before
     public void setup() {
-        manager = new DatabaseManager();
+        manager = getDatabaseManager();
         manager.connect("sqlcmd", "postgres", "root");
         manager.clear("users");
     }
 
+    public abstract DatabaseManager getDatabaseManager();
+
     @Test
     public void tetsGetAllTableNames() {
         String[] tableNames = manager.getTableNames();
-        assertEquals("[users, test]", Arrays.toString(tableNames));
+        assertEquals("[users]", Arrays.toString(tableNames));
     }
 
     @Test
@@ -29,10 +33,10 @@ public class DatabaseManagerTest {
 
         // when
         DataSet input = new DataSet();
-        input.put("id", 13);
         input.put("name", "Stiven");
         input.put("password", "pass");
-        manager.create(input);
+        input.put("id", 13);
+        manager.create("users", input);
 
         // then
         DataSet[] users = manager.getTableData("users");
@@ -50,10 +54,10 @@ public class DatabaseManagerTest {
 
 
         DataSet input = new DataSet();
-        input.put("id", 13);
         input.put("name", "Stiven");
         input.put("password", "pass");
-        manager.create(input);
+        input.put("id", 13);
+        manager.create("users", input);
 
         // when
         DataSet newValue = new DataSet();

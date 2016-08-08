@@ -1,4 +1,4 @@
-package com.yankovets.sqlcmd;
+package com.yankovets.sqlcmd.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,50 +8,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Random;
 
-public class DatabaseManager {
+public class JDBCDatabaseManager implements DatabaseManager {
 
     private Connection connection;
-
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        String database = "sqlcmd";
-        String user = "postgres";
-        String password = "root";
-
-        DatabaseManager manager = new DatabaseManager();
-        manager.connect(database, user, password);
-
-        Connection connection = manager.getConnection();
-
-        String tableName = "users";
-        DataSet data = new DataSet();
-
-        // delete
-        manager.clear(tableName);
-
-        // insert
-        data.put("id", 13);
-        data.put("name", "Stiven");
-        data.put("password", "pass");
-        manager.create(data);
-
-        // select
-        String[] tables = manager.getTableNames();
-        System.out.println(Arrays.toString(tables));
-
-
-        DataSet[] result = manager.getTableData(tableName);
-
-        System.out.println(Arrays.toString(result));
-
-        // update
-        DataSet data2 = new DataSet();
-        data2.put("name", "StivenEEEE");
-        manager.update(tableName,13, data2);
-
-        connection.close();
-    }
 
     public DataSet[] getTableData(String tableName) {
         try {
@@ -108,25 +68,21 @@ public class DatabaseManager {
         }
     }
 
-    public void connect(final String database, final String user, final String password) {
+    public void connect(String database, String userName, String password) {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            System.out.println("Please add jdbc jar to project.");
-            e.printStackTrace();
+            throw new RuntimeException("Please add jdbc jar to project.", e);
         }
         try {
             connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/" + database, user, password);
+                "jdbc:postgresql://localhost:5432/" + database, userName, password);
         } catch (SQLException e) {
-            System.out.println(String.format("Cant get connection for database:%s, user:%s.", database, user));
-            e.printStackTrace();
             connection = null;
+            throw new RuntimeException(String.format("Cant get connection for database:%s, user:%s.",
+                    database, userName),
+                    e);
         }
-    }
-
-    private Connection getConnection() {
-        return connection;
     }
 
     public void clear(String tableName) {
@@ -139,14 +95,14 @@ public class DatabaseManager {
         }
     }
 
-    public void create(DataSet input) {
+    public void create(String tableName, DataSet input) {
         try {
             Statement stmt = connection.createStatement();
 
             String tableNames = getNamesFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
 
-            stmt.executeUpdate("INSERT INTO users (" + tableNames + ")" +
+            stmt.executeUpdate("INSERT INTO " + tableName + " (" + tableNames + ")" +
                 "VALUES (" + values + ")");
             stmt.close();
         } catch (SQLException e) {
@@ -175,7 +131,7 @@ public class DatabaseManager {
         }
     }
 
-    private String getNamesFormated(final DataSet newValue, final String format) {
+    private String getNamesFormated(DataSet newValue, String format) {
         String string = "";
         for (String name : newValue.getNames()) {
             string += String.format(format, name);
@@ -184,7 +140,7 @@ public class DatabaseManager {
         return string;
     }
 
-    private String getValuesFormated(final DataSet input, final String format) {
+    private String getValuesFormated(DataSet input, String format) {
         String values = "";
         for (Object value : input.getValues()) {
             values += String.format(format, value);
