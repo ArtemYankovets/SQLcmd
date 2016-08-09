@@ -13,29 +13,21 @@ public class MainController {
     public MainController(View view, DatabaseManager manager) {
         this.view = view;
         this.manager = manager;
-        this.commands = new Command[] {new Exit(view), new Help(view), new List(manager, view), new Find(manager, view)};
+        this.commands = new Command[] {new Help(view), new List(manager, view), new Find(manager, view), new Exit(view), new Unsupported(view)};
     }
 
     public void run() {
         connectToDb();
         while (true) {
             view.write("Input command (or 'help' for help):");
-            String command = view.read();
-            if (commands[2].canProcess(command)) {
-                commands[2].process(command);
-            } else if (commands[3].canProcess(command)) {
-                commands[3].process(command);
-            } else if (commands[1].canProcess(command)) {
-                commands[1].process(command);
-            } else if (commands[0].canProcess(command)) {
-                commands[0].process(command);
-            } else {
-                view.write("Non exist command: " + command);
+            String commandName = view.read();
+
+            for (Command command: commands){
+                if (command.canProcess(commandName)) {
+                    command.process(commandName);
+                    break;
+                }
             }
-            //
-            //
-            //
-            //
         }
     }
 
@@ -63,10 +55,10 @@ public class MainController {
     }
 
     private void printError(Exception e) {
-        String message = /*e.getClass().getSimpleName() + ": "+ */e.getMessage();
+        String message = e.getMessage();
         Throwable cause = e.getCause();
         if (e.getCause() != null) {
-            message += " " + /*cause.getClass().getSimpleName() + ": " +*/ cause.getMessage();
+            message += " " + cause.getMessage();
         }
         view.write("Fail! The because of: " + message);
         view.write("Try again!\n");
