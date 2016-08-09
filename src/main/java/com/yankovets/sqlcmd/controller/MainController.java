@@ -2,6 +2,7 @@ package com.yankovets.sqlcmd.controller;
 
 import com.yankovets.sqlcmd.controller.command.Command;
 import com.yankovets.sqlcmd.controller.command.Exit;
+import com.yankovets.sqlcmd.controller.command.Help;
 import com.yankovets.sqlcmd.model.DataSet;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
@@ -17,7 +18,7 @@ public class MainController {
     public MainController(View view, DatabaseManager manager) {
         this.view = view;
         this.manager = manager;
-        this.commands = new Command[] {new Exit(view)};
+        this.commands = new Command[] {new Exit(view), new Help(view)};
     }
 
     public void run() {
@@ -29,8 +30,8 @@ public class MainController {
                 doList();
             } else if (command.startsWith("find|")) {
                 doFind(command);
-            } else if (command.equals("help")) {
-                doHelp();
+            } else if (commands[1].canProcess(command)) {
+                commands[1].process(command);
             } else if (commands[0].canProcess(command)) {
                 commands[0].process(command);
             } else {
@@ -79,20 +80,7 @@ public class MainController {
         view.write("-------------------------");
     }
 
-    private void doHelp() {
-        view.write("Exist commands:");
-        view.write("\tlist");
-        view.write("\t\tfor getting all tables from database, witch you got connection");
 
-        view.write("\tfind|tableName");
-        view.write("\t\tfor getting the data from table 'tableName'");
-
-        view.write("\thelp");
-        view.write("\t\tfor outputing this list of commend to screen");
-
-        view.write("\texit");
-        view.write("\t\tfor exit from application");
-    }
 
     private void doList() {
         String[] tableNames = manager.getTableNames();
