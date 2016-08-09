@@ -3,11 +3,10 @@ package com.yankovets.sqlcmd.controller;
 import com.yankovets.sqlcmd.controller.command.Command;
 import com.yankovets.sqlcmd.controller.command.Exit;
 import com.yankovets.sqlcmd.controller.command.Help;
+import com.yankovets.sqlcmd.controller.command.List;
 import com.yankovets.sqlcmd.model.DataSet;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
-
-import java.util.Arrays;
 
 public class MainController {
 
@@ -18,7 +17,7 @@ public class MainController {
     public MainController(View view, DatabaseManager manager) {
         this.view = view;
         this.manager = manager;
-        this.commands = new Command[] {new Exit(view), new Help(view)};
+        this.commands = new Command[] {new Exit(view), new Help(view), new List(manager, view)};
     }
 
     public void run() {
@@ -26,8 +25,8 @@ public class MainController {
         while (true) {
             view.write("Input command (or 'help' for help):");
             String command = view.read();
-            if (command.equals("list")) {
-                doList();
+            if (commands[2].canProcess(command)) {
+                commands[2].process(command);
             } else if (command.startsWith("find|")) {
                 doFind(command);
             } else if (commands[1].canProcess(command)) {
@@ -78,14 +77,6 @@ public class MainController {
         view.write("-------------------------");
         view.write(result);
         view.write("-------------------------");
-    }
-
-
-
-    private void doList() {
-        String[] tableNames = manager.getTableNames();
-        String message = Arrays.toString(tableNames);
-        view.write(message);
     }
 
     private void connectToDb() {
