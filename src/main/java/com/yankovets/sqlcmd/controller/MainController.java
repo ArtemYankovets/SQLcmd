@@ -1,10 +1,6 @@
 package com.yankovets.sqlcmd.controller;
 
-import com.yankovets.sqlcmd.controller.command.Command;
-import com.yankovets.sqlcmd.controller.command.Exit;
-import com.yankovets.sqlcmd.controller.command.Help;
-import com.yankovets.sqlcmd.controller.command.List;
-import com.yankovets.sqlcmd.model.DataSet;
+import com.yankovets.sqlcmd.controller.command.*;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 
@@ -17,7 +13,7 @@ public class MainController {
     public MainController(View view, DatabaseManager manager) {
         this.view = view;
         this.manager = manager;
-        this.commands = new Command[] {new Exit(view), new Help(view), new List(manager, view)};
+        this.commands = new Command[] {new Exit(view), new Help(view), new List(manager, view), new Find(manager, view)};
     }
 
     public void run() {
@@ -27,8 +23,8 @@ public class MainController {
             String command = view.read();
             if (commands[2].canProcess(command)) {
                 commands[2].process(command);
-            } else if (command.startsWith("find|")) {
-                doFind(command);
+            } else if (commands[3].canProcess(command)) {
+                commands[3].process(command);
             } else if (commands[1].canProcess(command)) {
                 commands[1].process(command);
             } else if (commands[0].canProcess(command)) {
@@ -43,41 +39,6 @@ public class MainController {
         }
     }
 
-    private void doFind(String command) {
-        String[] data = command.split("[|]");
-        String tableName = data[1];
-
-        DataSet[] tableData = manager.getTableData(tableName);
-        String[] tableColumns = manager.getTableColumns(tableName);
-
-        printHeader(tableColumns);
-        printTable(tableData);
-    }
-
-    private void printTable(DataSet[] tableData) {
-        for (DataSet row: tableData){
-            printRow(row);
-        }
-    }
-
-    private void printRow(DataSet row) {
-        Object[] values = row.getValues();
-        String result = "|";
-        for (Object value : values) {
-            result += value + "|";
-        }
-        view.write(result);
-    }
-
-    private void printHeader(String[] tableColumns) {
-        String result = "|";
-        for (String name : tableColumns) {
-            result += name + "|";
-        }
-        view.write("-------------------------");
-        view.write(result);
-        view.write("-------------------------");
-    }
 
     private void connectToDb() {
         view.write("Hello, user!");
