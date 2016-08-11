@@ -160,6 +160,11 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
     }
 
+    @Override
+    public boolean isConnected() {
+        return connection != null;
+    }
+
 
     private String getNamesFormated(DataSet newValue, String format) {
         String string = "";

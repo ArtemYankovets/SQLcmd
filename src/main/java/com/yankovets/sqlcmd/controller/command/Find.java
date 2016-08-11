@@ -22,6 +22,12 @@ public class Find implements Command{
     @Override
     public void process(String command) {
         String[] data = command.split("[|]");
+
+        if (data.length != 2){
+            throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
+                    " which split by '|' are %s, but expected 2", data.length));
+        }
+
         String tableName = data[1];
 
         DataSet[] tableData = manager.getTableData(tableName);
