@@ -23,8 +23,8 @@ public class InMemoryDatabaseManager implements DatabaseManager {
 
     @Override
     public String[] getTableNames() {
-        return new String[] { TABLE_NAME };
-    }
+        return new String[] { TABLE_NAME, "test" };
+    } // TODO to remove test
 
     @Override
     public void connect(String database, String userName, String password) {

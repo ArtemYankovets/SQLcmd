@@ -4,6 +4,9 @@ import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 
 public class Connect implements Command {
+
+    private static String COMMAND_SAMPLE = "connect|sqlcmd|postgres|root";
+
     private DatabaseManager manager;
     private View view;
 
@@ -22,9 +25,10 @@ public class Connect implements Command {
     public void process(String command) {
         try {
             String[] data = command.split("[|]");
-            if (data.length != 4){ // TODO 4 - magic number!
+            if (data.length != count()) {
                 throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
-                        " which split by '|' are %s, but expected 4", data.length));
+                        " which split by '|' are %s, but expected %s",
+                        data.length, count()));
             }
 
             String databese = data[1];
@@ -36,6 +40,10 @@ public class Connect implements Command {
         } catch (Exception e) {
             printError(e);
         }
+    }
+
+    private int count() {
+        return COMMAND_SAMPLE.split("[|]").length;
     }
 
     private void printError(Exception e) {

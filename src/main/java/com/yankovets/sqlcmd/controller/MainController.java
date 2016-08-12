@@ -27,10 +27,14 @@ public class MainController {
         view.write("Please input database name, user name and password in format: connect|database|userName|password");
 
         while (true) {
-            String commandName = view.read();
+            String input = view.read();
+            if (input == null) {    // null if close application
+                new Exit(view).process(input);
+            }
+
             for (Command command: commands){
-                if (command.canProcess(commandName)) {
-                    command.process(commandName);
+                if (command.canProcess(input)) {
+                    command.process(input);
                     break;
                 }
             }
