@@ -1,6 +1,8 @@
 package com.yankovets.sqlcmd.integration;
 
 import com.yankovets.sqlcmd.controller.Main;
+import com.yankovets.sqlcmd.model.DatabaseManager;
+import com.yankovets.sqlcmd.model.JDBCDatabaseManager;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,9 +17,12 @@ public class IntegrationTest {
 
     private ConfigurableInputStream in;
     private ByteArrayOutputStream out;
+    private DatabaseManager databasemanager;
 
     @Before
     public void setup(){
+        databasemanager = new JDBCDatabaseManager();
+
         in = new ConfigurableInputStream();
         out = new ByteArrayOutputStream();
 
@@ -54,6 +59,10 @@ public class IntegrationTest {
                 "\t\tfor connection to database, which we planning to work with\r\n" +
                 "\tlist\r\n" +
                 "\t\tfor getting all tables from database, witch you got connection\r\n" +
+                "\tclear|tableName\r\n" +
+                "\t\tfor all table clearing\r\n" +
+                "\tcreate|tableName|column1|value1|column2|value2|...|columnN|valueN\r\n" +
+                "\t\tfor creating notes in database\r\n" +
                 "\tfind|tableName\r\n" +
                 "\t\tfor getting the data from table 'tableName'\r\n" +
                 "\thelp\r\n" +
@@ -203,6 +212,7 @@ public class IntegrationTest {
                 "-------------------------\r\n" +
                 "|name|password|id|\r\n" +
                 "-------------------------\r\n" +
+                "-------------------------\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // exit
                 "See you next time!\r\n", getData());
@@ -257,6 +267,82 @@ public class IntegrationTest {
                 "Input command (or 'help' for help):\r\n" +
                 // list
                 "[qwe]\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // exit
+                "See you next time!\r\n", getData());
+    }
+
+    @Test
+    public void testConnectWithError() {
+        // given
+        in.add("connect|sqlcmd");
+        in.add("exit");
+
+        // when
+        Main.main(new String[0]);
+
+        // then
+        assertEquals("Hello, user!\r\n" +
+                "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
+                // connect|sqlcmd
+                "Fail! The cause of: The amount of arguments for this command, which split by '|' are 2, but expected 4\r\n" +
+                "Try again!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // exit
+                "See you next time!\r\n", getData());
+    }
+
+    @Test
+    public void testFindAfterConnect_WithData() {
+        // given
+//        databasemanager.connect("sqlcmd", "postgres", "root");
+//
+//        databasemanager.clear("users");
+//
+//        DataSet user1 = new DataSet();
+//        user1.put("id", "13");
+//        user1.put("name", "Stiven");
+//        user1.put("password", "*****");
+//        databasemanager.create("users", user1);
+//
+//        DataSet user2 = new DataSet();
+//        user2.put("id", "14");
+//        user2.put("name", "Eva");
+//        user2.put("password", "+++++");
+//        databasemanager.create("users", user2);
+
+        in.add("connect|sqlcmd|postgres|root");
+        in.add("clear|users");
+        in.add("create|users|id|13|name|Stiven|password|*****");
+        in.add("create|users|id|14|name|Eva|password|+++++");
+        in.add("find|users");
+        in.add("exit");
+
+        // when
+        Main.main(new String[0]);
+
+        // then
+        assertEquals("Hello, user!\r\n" +
+                "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
+                // connet|
+                "Success!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                //clear|users
+                "Table users was successfully cleared\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // create|users|id|13|name|Stiven|password|*****
+                "Note {names:[id, name, password], values:[13, Stiven, *****]} was successfully created in table 'users'\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // create|users|id|14|name|Eva|password|+++++
+                "Note {names:[id, name, password], values:[14, Eva, +++++]} was successfully created in table 'users'\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // find|users
+                "-------------------------\r\n" +
+                "|name|password|id|\r\n" +
+                "-------------------------\r\n" +
+                "|Stiven|*****|13|\r\n" +
+                "|Eva|+++++|14|\r\n" +
+                "-------------------------\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // exit
                 "See you next time!\r\n", getData());

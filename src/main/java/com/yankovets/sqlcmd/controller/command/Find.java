@@ -41,6 +41,7 @@ public class Find implements Command{
         for (DataSet row: tableData){
             printRow(row);
         }
+        view.write("-------------------------");
     }
 
     private void printRow(DataSet row) {

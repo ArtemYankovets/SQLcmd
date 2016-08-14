@@ -53,6 +53,6 @@ public class Connect implements Command {
             message += " " + cause.getMessage();
         }
         view.write("Fail! The cause of: " + message);
-        view.write("Try again!\n");
+        view.write("Try again!");
     }
 }
