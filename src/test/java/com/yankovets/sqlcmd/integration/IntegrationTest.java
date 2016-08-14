@@ -347,4 +347,53 @@ public class IntegrationTest {
                 // exit
                 "See you next time!\r\n", getData());
     }
+
+    @Test
+    public void testClearWithError() {
+        // given
+        in.add("connect|sqlcmd|postgres|root");
+        in.add("clear|qwe|qwqw");
+        in.add("exit");
+
+        // when
+        Main.main(new String[0]);
+
+        // then
+        assertEquals("Hello, user!\r\n" +
+                "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
+                // connet|
+                "Success!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // clear|qwe|qwqw
+                "Fail! The cause of: Command format 'clear|tableName', but you taped: clear|qwe|qwqw\r\n" +
+                "Try again!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // exit
+                "See you next time!\r\n", getData());
+    }
+
+    @Test
+    public void testCreateWithError() {
+        // given
+
+        in.add("connect|sqlcmd|postgres|root");
+        in.add("create|users|error");
+        in.add("exit");
+
+        // when
+        Main.main(new String[0]);
+
+        // then
+        assertEquals("Hello, user!\r\n" +
+                "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
+                // connet|
+                "Success!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // create|users|error
+                "Fail! The cause of: Must be even amount of parameters in format 'create|tableName|column1|value1|column2|value2|...|columnN|valueN', you typed: 'create|users|error'\r\n" +
+                "Try again!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
+                // exit
+                "See you next time!\r\n", getData());
+    }
 }

@@ -23,36 +23,23 @@ public class Connect implements Command {
 
     @Override
     public void process(String command) {
-        try {
-            String[] data = command.split("[|]");
-            if (data.length != count()) {
-                throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
-                        " which split by '|' are %s, but expected %s",
-                        data.length, count()));
-            }
-
-            String databese = data[1];
-            String username = data[2];
-            String password = data[3];
-
-            manager.connect(databese, username, password);
-            view.write("Success!");
-        } catch (Exception e) {
-            printError(e);
+        String[] data = command.split("[|]");
+        if (data.length != count()) {
+            throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
+                            " which split by '|' are %s, but expected %s",
+                    data.length, count()));
         }
+
+        String databese = data[1];
+        String username = data[2];
+        String password = data[3];
+
+        manager.connect(databese, username, password);
+        view.write("Success!");
     }
 
     private int count() {
         return COMMAND_SAMPLE.split("[|]").length;
     }
 
-    private void printError(Exception e) {
-        String message = e.getMessage();
-        Throwable cause = e.getCause();
-        if (e.getCause() != null) {
-            message += " " + cause.getMessage();
-        }
-        view.write("Fail! The cause of: " + message);
-        view.write("Try again!");
-    }
 }

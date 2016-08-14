@@ -22,9 +22,9 @@ public class Create implements Command {
     public void process(String command) {
         String[] data = command.split("[|]");
         if (data.length % 2 != 0){
-            throw new IllegalArgumentException("Must be even amount of parameters " +
+            throw new IllegalArgumentException(String.format("Must be even amount of parameters " +
                     "in format 'create|tableName|column1|value1|column2|value2|...|columnN|valueN', " +
-                    "you typed: " + command.length());
+                    "you typed: '%s'", command));
         }
         String tableName = data[1];
 
