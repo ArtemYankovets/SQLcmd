@@ -5,6 +5,9 @@ import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 
 public class Find implements Command{
+
+    private static String COMMAND_FIND_SAMPLE = "find|users";
+
     private DatabaseManager manager;
     private View view;
 
@@ -23,9 +26,10 @@ public class Find implements Command{
     public void process(String command) {
         String[] data = command.split("[|]");
 
-        if (data.length != 2){
+        if (data.length != count()){
             throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
-                    " which split by '|' are %s, but expected 2", data.length));
+                            " which split by '|' are %s, but expected %s",
+                    data.length, count()));
         }
 
         String tableName = data[1];
@@ -35,6 +39,10 @@ public class Find implements Command{
 
         printHeader(tableColumns);
         printTable(tableData);
+    }
+
+    private int count() {
+        return COMMAND_FIND_SAMPLE.split("[|]").length;
     }
 
     private void printTable(DataSet[] tableData) {

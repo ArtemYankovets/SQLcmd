@@ -4,7 +4,6 @@ import com.yankovets.sqlcmd.controller.Main;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.model.JDBCDatabaseManager;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -218,12 +217,11 @@ public class IntegrationTest {
                 "See you next time!\r\n", getData());
     }
 
-    @Ignore
     @Test
-    public void testFindWithErrorAfterConnect() {
+    public void testFindWithError() {
         // given
         in.add("connect|sqlcmd|postgres|root");
-        in.add("find|nonexistent");
+        in.add("find|qwe|qwqw");
         in.add("exit");
 
         // when
@@ -236,7 +234,9 @@ public class IntegrationTest {
                 "Success!\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // find|nonexistent
-                "\r\n" +
+                "Fail! The cause of: The amount of arguments for this command, which split by '|' are 3, but expected 2\r\n" +
+                "Try again!\r\n" +
+                "Input command (or 'help' for help):\r\n" +
                 // exit
                 "See you next time!\r\n", getData());
     }

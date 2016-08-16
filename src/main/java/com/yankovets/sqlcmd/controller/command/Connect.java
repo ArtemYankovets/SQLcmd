@@ -5,7 +5,7 @@ import com.yankovets.sqlcmd.view.View;
 
 public class Connect implements Command {
 
-    private static String COMMAND_SAMPLE = "connect|sqlcmd|postgres|root";
+    private static String COMMAND_CONNECT_SAMPLE = "connect|sqlcmd|postgres|root";
 
     private DatabaseManager manager;
     private View view;
@@ -39,7 +39,7 @@ public class Connect implements Command {
     }
 
     private int count() {
-        return COMMAND_SAMPLE.split("[|]").length;
+        return COMMAND_CONNECT_SAMPLE.split("[|]").length;
     }
 
 }
