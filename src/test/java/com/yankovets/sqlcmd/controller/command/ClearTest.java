@@ -5,8 +5,10 @@ import com.yankovets.sqlcmd.view.View;
 import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -60,5 +62,29 @@ public class ClearTest {
 
         // then
         assertFalse(canProcess);
+    }
+
+    @Test
+    public void testValidationErrorWhenCountParametersIsLessThen2() {
+        // when
+        try {
+            command.process("clear");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // then
+            assertEquals("Command format 'clear|tableName', but you taped: clear", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidationErrorWhenCountParametersIsMoreThen2() {
+        // when
+        try {
+            command.process("clear|tableName|qwe");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // then
+            assertEquals("Command format 'clear|tableName', but you taped: clear|tableName|qwe", e.getMessage());
+        }
     }
 }
