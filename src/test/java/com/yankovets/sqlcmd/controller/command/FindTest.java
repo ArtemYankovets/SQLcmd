@@ -145,8 +145,7 @@ public class FindTest {
             fail();
         } catch (IllegalArgumentException e) {
             // then
-            assertEquals("The amount of arguments for this command," +
-                    " which split by '|' are 1, but expected 2", e.getMessage());
+            assertEquals("Command format 'find|tableName', but you taped: find", e.getMessage());
         }
     }
 
@@ -158,8 +157,7 @@ public class FindTest {
             fail();
         } catch (IllegalArgumentException e) {
             // then
-            assertEquals("The amount of arguments for this command," +
-                    " which split by '|' are 3, but expected 2", e.getMessage());
+            assertEquals("Command format 'find|tableName', but you taped: find|tableName|qwe", e.getMessage());
         }
     }
 

@@ -234,7 +234,7 @@ public class IntegrationTest {
                 "Success!\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // find|nonexistent
-                "Fail! The cause of: The amount of arguments for this command, which split by '|' are 3, but expected 2\r\n" +
+                "Fail! The cause of: Command format 'find|tableName', but you taped: find|qwe|qwqw\r\n" +
                 "Try again!\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // exit
