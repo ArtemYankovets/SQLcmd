@@ -6,9 +6,11 @@ import com.yankovets.sqlcmd.view.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import static org.mockito.Mockito.*;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class FindTest {
 
@@ -26,7 +28,7 @@ public class FindTest {
         // given
         Command command = new Find(manager, view);
         when(manager.getTableColumns("users")).
-                thenReturn(new String[] {"id", "name", "password"});
+                thenReturn(new String[]{"id", "name", "password"});
 
         DataSet user1 = new DataSet();
         user1.put("id", 12);
@@ -38,7 +40,7 @@ public class FindTest {
         user2.put("name", "Eva");
         user2.put("password", "+++++");
 
-        DataSet[] data = new DataSet[] {user1, user2};
+        DataSet[] data = new DataSet[]{user1, user2};
 
         when(manager.getTableData("users")).
                 thenReturn(data);
@@ -50,10 +52,71 @@ public class FindTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(view, atLeastOnce()).write(captor.capture());
         assertEquals("[-------------------------, " +
-                     "|id|name|password|, " +
-                     "-------------------------, " +
-                     "|12|Stiven|*****|, " +
-                     "|13|Eva|+++++|, " +
-                     "-------------------------]", captor.getAllValues().toString());
+                "|id|name|password|, " +
+                "-------------------------, " +
+                "|12|Stiven|*****|, " +
+                "|13|Eva|+++++|, " +
+                "-------------------------]", captor.getAllValues().toString());
+    }
+
+    @Test
+    public void testPrintEmptyTableData() {
+        // given
+        Command command = new Find(manager, view);
+        when(manager.getTableColumns("users")).
+                thenReturn(new String[]{"id", "name", "password"});
+
+        DataSet[] data = new DataSet[0];
+
+        when(manager.getTableData("users")).
+                thenReturn(data);
+
+        // when
+        command.process("find|users");
+
+        // then
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(view, atLeastOnce()).write(captor.capture());
+        assertEquals("[-------------------------, " +
+                "|id|name|password|, " +
+                "-------------------------, " +
+                "-------------------------]", captor.getAllValues().toString());
+    }
+
+    @Test
+    public void testCanProcessFindWithParametersString() {
+
+        // given
+        Command command = new Find(manager, view);
+
+        // when
+        boolean canProcess = command.canProcess("find|users");
+
+        // then
+        assertTrue(canProcess);
+    }
+
+    @Test
+    public void testCanProcessFindWithoutParametersString() {
+        // given
+        Command command = new Find(manager, view);
+
+        // when
+        boolean canProcess = command.canProcess("find");
+
+        // then
+        assertFalse(canProcess);
+    }
+
+    @Test
+    public void testCanProcessQweString() {
+        // given
+        Command command = new Find(manager, view);
+
+        // when
+        boolean canProcess = command.canProcess("qwe|users");
+
+        // then
+        assertFalse(canProcess);
     }
 }
