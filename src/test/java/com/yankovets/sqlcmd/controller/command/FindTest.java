@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class FindTest {
@@ -135,4 +136,31 @@ public class FindTest {
         // then
         assertFalse(canProcess);
     }
+
+    @Test
+    public void testValidationErrorWhenCountParametersIsLessThen2() {
+        // when
+        try {
+            command.process("find");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // then
+            assertEquals("The amount of arguments for this command," +
+                    " which split by '|' are 1, but expected 2", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidationErrorWhenCountParametersIsMoreThen2() {
+        // when
+        try {
+            command.process("find|tableName|qwe");
+            fail();
+        } catch (IllegalArgumentException e) {
+            // then
+            assertEquals("The amount of arguments for this command," +
+                    " which split by '|' are 3, but expected 2", e.getMessage());
+        }
+    }
+
 }
