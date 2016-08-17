@@ -32,7 +32,7 @@ public class Find implements Command{
                     data.length, count()));
         }
 
-        String tableName = data[1];
+        String tableName = data[1]; // TODO to add validation
 
         DataSet[] tableData = manager.getTableData(tableName);
         String[] tableColumns = manager.getTableColumns(tableName);

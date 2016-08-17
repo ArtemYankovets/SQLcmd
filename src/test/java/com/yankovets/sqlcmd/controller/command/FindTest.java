@@ -59,15 +59,39 @@ public class FindTest {
     }
 
     @Test
+    public void testPrintTableDataWithOneColumn() {
+        // given
+        when(manager.getTableColumns("test")).
+                thenReturn(new String[]{"id"});
+
+        DataSet user1 = new DataSet();
+        user1.put("id", 12);
+
+        DataSet user2 = new DataSet();
+        user2.put("id", 13);
+
+        DataSet[] data = new DataSet[]{user1, user2};
+        when(manager.getTableData("test")).thenReturn(data);
+
+        // when
+        command.process("find|test");
+
+        // then
+        shouldPrint("[-------------------------, " +
+                "|id|, " +
+                "-------------------------, " +
+                "|12|, " +
+                "|13|, " +
+                "-------------------------]");
+    }
+
+    @Test
     public void testPrintEmptyTableData() {
         // given
         when(manager.getTableColumns("users")).
                      thenReturn(new String[]{"id", "name", "password"});
 
-        DataSet[] data = new DataSet[0];
-
-        when(manager.getTableData("users")).
-                     thenReturn(data);
+        when(manager.getTableData("users")).thenReturn(new DataSet[0]);
 
         // when
         command.process("find|users");
