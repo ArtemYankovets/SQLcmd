@@ -50,37 +50,39 @@ public class FindTest {
         command.process("find|users");
 
         // then
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals("[-------------------------, " +
-                "|id|name|password|, " +
-                "-------------------------, " +
-                "|12|Stiven|*****|, " +
-                "|13|Eva|+++++|, " +
-                "-------------------------]", captor.getAllValues().toString());
+        shouldPrint("[-------------------------, " +
+                    "|id|name|password|, " +
+                    "-------------------------, " +
+                    "|12|Stiven|*****|, " +
+                    "|13|Eva|+++++|, " +
+                    "-------------------------]");
     }
 
     @Test
     public void testPrintEmptyTableData() {
         // given
         when(manager.getTableColumns("users")).
-                thenReturn(new String[]{"id", "name", "password"});
+                     thenReturn(new String[]{"id", "name", "password"});
 
         DataSet[] data = new DataSet[0];
 
         when(manager.getTableData("users")).
-                thenReturn(data);
+                     thenReturn(data);
 
         // when
         command.process("find|users");
 
         // then
+        shouldPrint("[-------------------------, " +
+                    "|id|name|password|, " +
+                    "-------------------------, " +
+                    "-------------------------]");
+    }
+
+    private void shouldPrint(String expected) {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals("[-------------------------, " +
-                "|id|name|password|, " +
-                "-------------------------, " +
-                "-------------------------]", captor.getAllValues().toString());
+        assertEquals(expected, captor.getAllValues().toString());
     }
 
     @Test
