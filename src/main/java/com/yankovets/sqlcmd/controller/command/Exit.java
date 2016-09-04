@@ -20,4 +20,6 @@ public class Exit implements Command {
         view.write("See you next time!");
         throw new ExitException();
     }
+
+
 }

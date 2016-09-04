@@ -19,7 +19,7 @@ public class ClearTest {
     private Command command;
 
     @Before
-    public void setup() {
+    public void setUp() {
         manager = mock(DatabaseManager.class);
         view = mock(View.class);
         command = new Clear(manager, view);

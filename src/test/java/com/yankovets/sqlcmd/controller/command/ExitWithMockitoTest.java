@@ -1,14 +1,21 @@
 package com.yankovets.sqlcmd.controller.command;
 
 import com.yankovets.sqlcmd.view.View;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import static junit.framework.TestCase.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class ExitWithMockitoTest {
 
-    private View view = Mockito.mock(View.class);
+    private View view;
+
+    @Before
+    public void setUp () {
+        view = mock(View.class);
+    }
 
     @Test
     public void testCanProcessExitString() {
@@ -49,6 +56,6 @@ public class ExitWithMockitoTest {
         }
 
         // then
-        Mockito.verify(view).write("See you next time!");
+        verify(view).write("See you next time!");
     }
 }
