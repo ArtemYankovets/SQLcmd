@@ -48,9 +48,6 @@ public class HelpTest {
         command.process("help");
 
         // then
-//        boolean canprocess = command.canProcess("help");
-//        assertTrue(canprocess);
-
         shouldPrint("[Exist commands:, " +
                     "\tconnect|databaseName|username|password, " +
                     "\t\tfor connection to database, which we planning to work with, " +
