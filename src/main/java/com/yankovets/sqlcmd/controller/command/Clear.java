@@ -27,11 +27,11 @@ public class Clear implements Command {
             throw new IllegalArgumentException("Command format 'clear|tableName', but you taped: " + command);
         }
 
-        String table = data[1];
+        String tableName = data[1];
 
-        if (commandValidation(table)) {
+        if (commandValidation(tableName)) {
             view.write(String.format("Attention! You are going to delete all data from the table '%s'. Are you sure? " +
-                    "[ Y / N ]", table));
+                    "[ Y / N ]", tableName));
             String result = view.read().toUpperCase();
             if (result.equals("Y")) {
                 manager.clear(data[1]);
@@ -40,10 +40,10 @@ public class Clear implements Command {
         }
     }
 
-    private boolean commandValidation (String table) {
-        Set<String> tableNames = manager.getTableNames();
-        if (!tableNames.contains(table)) {
-            view.write(String.format("There is not the table with name '%s' in database.", table));
+    private boolean commandValidation (String tableName) {
+        Set<String> setOfTableNames = manager.getTableNames();
+        if (!setOfTableNames.contains(tableName)) {
+            view.write(String.format("There is not the table with name '%s' in database.", tableName));
             return false;
         } else {
             return true;

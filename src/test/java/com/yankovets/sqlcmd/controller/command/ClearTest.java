@@ -29,12 +29,12 @@ public class ClearTest {
     @Test
     public void testClearTableWithTrueValidationWithConfirm() {
         // when
-        String table = "users";
-        Set<String> tableNames = new HashSet<>();
-        tableNames.add(table);
-        when(manager.getTableNames()).thenReturn(tableNames);
+        String tableName = "users";
+        Set<String> setOfTableNames = new HashSet<>();
+        setOfTableNames.add(tableName);
+        when(manager.getTableNames()).thenReturn(setOfTableNames);
         when(view.read()).thenReturn("Y");
-        command.process("clear|" + table);
+        command.process("clear|" + tableName);
 
         // then
         shouldPrint("[Attention! You are going to delete all data from the table 'users'. Are you sure? [ Y / N ]" +
@@ -45,12 +45,12 @@ public class ClearTest {
     @Test
     public void testClearTableWithTrueValidationWithOutConfirm() {
         // when
-        String table = "users";
-        Set<String> tableNames = new HashSet<>();
-        tableNames.add(table);
-        when(manager.getTableNames()).thenReturn(tableNames);
+        String tableName = "users";
+        Set<String> setOfTableNames = new HashSet<>();
+        setOfTableNames.add(tableName);
+        when(manager.getTableNames()).thenReturn(setOfTableNames);
         when(view.read()).thenReturn("N");
-        command.process("clear|" + table);
+        command.process("clear|" + tableName);
 
         // then
         shouldPrint("[Attention! You are going to delete all data from the table 'users'. Are you sure? [ Y / N ]]");

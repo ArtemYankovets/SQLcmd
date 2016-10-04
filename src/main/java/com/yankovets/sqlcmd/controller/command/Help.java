@@ -25,7 +25,7 @@ public class Help implements Command {
         view.write("\t\tfor getting all tables from database, witch you got connection");
 
         view.write("\tclear|tableName");
-        view.write("\t\tfor all table clearing"); // TODO if user input command recall them
+        view.write("\t\tfor all table clearing");
 
         view.write("\tcreate|tableName|column1|value1|column2|value2|...|columnN|valueN");
         view.write("\t\tfor creating notes in database");
