@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -29,7 +32,12 @@ public class FindTest {
     @Test
     public void testPrintTableData() {
         // given
-        when(manager.getTableColumns("users")).
+        String tableName = "users";
+        Set<String> setOfTableNames = new HashSet<>();
+        setOfTableNames.add(tableName);
+        when(manager.getTableNames()).thenReturn(setOfTableNames);
+
+        when(manager.getTableColumns(tableName)).
                 thenReturn(new String[]{"id", "name", "password"});
 
         DataSet user1 = new DataSet();
@@ -44,11 +52,11 @@ public class FindTest {
 
         DataSet[] data = new DataSet[]{user1, user2};
 
-        when(manager.getTableData("users")).
+        when(manager.getTableData(tableName)).
                 thenReturn(data);
 
         // when
-        command.process("find|users");
+        command.process("find|" + tableName);
 
         // then
         shouldPrint("[-------------------------, " +
@@ -62,7 +70,12 @@ public class FindTest {
     @Test
     public void testPrintTableDataWithOneColumn() {
         // given
-        when(manager.getTableColumns("test")).
+        String tableName = "test";
+        Set<String> setOfTableNames = new HashSet<>();
+        setOfTableNames.add(tableName);
+        when(manager.getTableNames()).thenReturn(setOfTableNames);
+
+        when(manager.getTableColumns(tableName)).
                 thenReturn(new String[]{"id"});
 
         DataSet user1 = new DataSet();
@@ -72,10 +85,10 @@ public class FindTest {
         user2.put("id", 13);
 
         DataSet[] data = new DataSet[]{user1, user2};
-        when(manager.getTableData("test")).thenReturn(data);
+        when(manager.getTableData(tableName)).thenReturn(data);
 
         // when
-        command.process("find|test");
+        command.process("find|" + tableName);
 
         // then
         shouldPrint("[-------------------------, " +
@@ -89,13 +102,18 @@ public class FindTest {
     @Test
     public void testPrintEmptyTableData() {
         // given
-        when(manager.getTableColumns("users")).
+        String tableName = "users";
+        Set<String> setOfTableNames = new HashSet<>();
+        setOfTableNames.add(tableName);
+        when(manager.getTableNames()).thenReturn(setOfTableNames);
+
+        when(manager.getTableColumns(tableName)).
                      thenReturn(new String[]{"id", "name", "password"});
 
-        when(manager.getTableData("users")).thenReturn(new DataSet[0]);
+        when(manager.getTableData(tableName)).thenReturn(new DataSet[0]);
 
         // when
-        command.process("find|users");
+        command.process("find|" + tableName);
 
         // then
         shouldPrint("[-------------------------, " +
@@ -160,5 +178,18 @@ public class FindTest {
             assertEquals("Command format 'find|tableName', but you taped: find|tableName|qwe", e.getMessage());
         }
     }
+
+    @Test
+    public void testValidationTableName() {
+        // when
+        command.process("find|qwe");
+
+        // then
+        verify(view).write("There is not the table with name 'qwe' in database.");
+        verify(manager, never()).getTableData(anyString());
+        verify(manager, never()).getTableColumns(anyString());
+    }
+
+
 
 }

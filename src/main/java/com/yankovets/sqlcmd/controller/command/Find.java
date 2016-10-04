@@ -4,6 +4,8 @@ import com.yankovets.sqlcmd.model.DataSet;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 
+import java.util.Set;
+
 public class Find implements Command{
 
     private static String COMMAND_FIND_SAMPLE = "find|tableName";
@@ -30,13 +32,15 @@ public class Find implements Command{
             throw new IllegalArgumentException("Command format 'find|tableName', but you taped: " + command);
         }
 
-        String tableName = data[1]; // TODO to add validation
+        String tableName = data[1];
 
-        DataSet[] tableData = manager.getTableData(tableName);
-        String[] tableColumns = manager.getTableColumns(tableName);
+        if (commandValidation(tableName)) {
+            DataSet[] tableData = manager.getTableData(tableName);
+            String[] tableColumns = manager.getTableColumns(tableName);
 
-        printHeader(tableColumns);
-        printTable(tableData);
+            printHeader(tableColumns);
+            printTable(tableData);
+        }
     }
 
     private int count() {
@@ -67,5 +71,15 @@ public class Find implements Command{
         view.write("-------------------------");
         view.write(result);
         view.write("-------------------------");
+    }
+
+    private boolean commandValidation (String tableName) {
+        Set<String> setOfTableNames = manager.getTableNames();
+        if (!setOfTableNames.contains(tableName)) {
+            view.write(String.format("There is not the table with name '%s' in database.", tableName));
+            return false;
+        } else {
+            return true;
+        }
     }
 }
