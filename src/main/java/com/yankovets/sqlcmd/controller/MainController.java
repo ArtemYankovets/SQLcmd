@@ -34,7 +34,7 @@ public class MainController {
     }
 
     private void doWork() {
-        view.write("Hello, user!");
+        view.write("Welcome!");
         view.write("Please input database name, user name and password in format: connect|database|userName|password");
 
         while (true) {

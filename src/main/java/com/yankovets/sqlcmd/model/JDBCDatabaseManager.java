@@ -1,16 +1,13 @@
 package com.yankovets.sqlcmd.model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class JDBCDatabaseManager implements DatabaseManager {
 
+    public static final String DATABASE_URL = "jdbc:postgresql://localhost:5433/";
     private Connection connection;
 
     @Override
@@ -18,8 +15,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
         int size = getSize(tableName);
 
         try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName))
-        {
+             ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName)) {
             ResultSetMetaData rsmd = rs.getMetaData();
             DataSet[] result = new DataSet[size];
             int index = 0;
@@ -39,8 +35,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     private int getSize(String tableName) {
         try (Statement stmt = connection.createStatement();
-             ResultSet rsCount = stmt.executeQuery("SELECT COUNT (*) FROM " + tableName))
-        {
+             ResultSet rsCount = stmt.executeQuery("SELECT COUNT (*) FROM " + tableName)) {
             rsCount.next();
             int size = rsCount.getInt(1);
             return size;
@@ -51,52 +46,59 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public String[] getTableNames() {
+    public Set<String> getTableNames() {
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
-                "WHERE table_schema='public' " +
-                "AND table_type='BASE TABLE'");
-            String[] tables = new String[100];
-            int index = 0;
+                    "WHERE table_schema='public' " +
+                    "AND table_type='BASE TABLE'");
+            Set<String> tables = new TreeSet<>();
             while (rs.next()) {
-                tables[index++] = rs.getString("table_name");
+                tables.add(rs.getString("table_name"));
             }
-            tables = Arrays.copyOf(tables, index, String[].class);
             rs.close();
             stmt.close();
             return tables;
         } catch (SQLException e) {
             e.printStackTrace();
-            return new String[0];
+            return new TreeSet<>();
         }
     }
 
     @Override
-    public void connect(String database, String userName, String password) {
+    public void connect(String database, String userName, String password) throws SQLException {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Please add jdbc jar to project.", e);
         }
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-            connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/" + database, userName, password);
-        } catch (SQLException e) {
 
-            connection = null;
-            throw new RuntimeException(String.format("Cant get connection for database:%s, user:%s.",
-                    database, userName),
-                    e);
+
+        if (connection != null) {
+            connection.close();
         }
+        connection = DriverManager.getConnection(
+                DATABASE_URL + database, userName, password);
+
+    }
+
+    public void connect(String driverName, String hostName, String database, String userName, String password) throws SQLException {
+        try {
+            Class.forName(driverName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Please input the correct description of jdbc driver.");
+        }
+
+        if (connection != null) {
+            connection.close();
+        }
+        connection = DriverManager.getConnection(
+                driverName + hostName + "[/]" + database, userName, password);
     }
 
     @Override
     public void clear(String tableName) {
-        try (Statement stmt = connection.createStatement()){
+        try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate("DELETE FROM " + tableName);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,12 +107,12 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     @Override
     public void create(String tableName, DataSet input) {
-        try (Statement stmt = connection.createStatement()){
+        try (Statement stmt = connection.createStatement()) {
             String tableNames = getNamesFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
 
             stmt.executeUpdate("INSERT INTO " + tableName + " (" + tableNames + ")" +
-                "VALUES (" + values + ")");
+                    "VALUES (" + values + ")");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -137,9 +139,8 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public String[] getTableColumns(String tableName) {
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM information_schema.columns " +
-                                              "WHERE table_schema='public' " +
-                                              "AND table_name='" + tableName + "'"))
-        {
+                     "WHERE table_schema='public' " +
+                     "AND table_name='" + tableName + "'")) {
             String[] tables = new String[100];
             int index = 0;
             while (rs.next()) {

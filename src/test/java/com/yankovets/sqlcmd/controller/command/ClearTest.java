@@ -4,13 +4,14 @@ import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static junit.framework.TestCase.*;
+import static org.mockito.Mockito.*;
 
 public class ClearTest {
 
@@ -26,15 +27,47 @@ public class ClearTest {
     }
 
     @Test
-    public void testClearTable() {
-        // given
-
+    public void testClearTableWithTrueValidationWithConfirm() {
         // when
-        command.process("clear|users");
+        String table = "users";
+        Set<String> tableNames = new HashSet<>();
+        tableNames.add(table);
+        when(manager.getTableNames()).thenReturn(tableNames);
+        when(view.read()).thenReturn("Y");
+        command.process("clear|" + table);
 
         // then
+        shouldPrint("[Attention! You are going to delete all data from the table 'users'. Are you sure? [ Y / N ]" +
+                ", Table users was successfully cleared]");
         verify(manager).clear("users");
-        verify(view).write("Table users was successfully cleared");
+    }
+
+    @Test
+    public void testClearTableWithTrueValidationWithOutConfirm() {
+        // when
+        String table = "users";
+        Set<String> tableNames = new HashSet<>();
+        tableNames.add(table);
+        when(manager.getTableNames()).thenReturn(tableNames);
+        when(view.read()).thenReturn("N");
+        command.process("clear|" + table);
+
+        // then
+        shouldPrint("[Attention! You are going to delete all data from the table 'users'. Are you sure? [ Y / N ]]");
+        verify(manager, never()).clear("users");
+    }
+
+
+
+    @Test
+    public void testClearTableWithFalseValidation() {
+        // when
+        when(manager.getTableNames()).thenReturn(new HashSet<String>());
+        when(view.read()).thenReturn("N");
+        command.process("clear|qwe");
+
+        // then
+        verify(view).write("There is not the table with name 'qwe' in database.");
     }
 
     @Test
@@ -86,5 +119,11 @@ public class ClearTest {
             // then
             assertEquals("Command format 'clear|tableName', but you taped: clear|tableName|qwe", e.getMessage());
         }
+    }
+
+    private void shouldPrint(String expected) {
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(view, atLeastOnce()).write(captor.capture());
+        assertEquals(expected, captor.getAllValues().toString());
     }
 }

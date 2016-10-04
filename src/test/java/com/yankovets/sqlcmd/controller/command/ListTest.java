@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +28,7 @@ public class ListTest {
     }
 
     @Test
-    public void testCanProcessHelpString() {
+    public void testCanProcessListString() {
         // when
         boolean canProcess = command.canProcess("list");
 
@@ -45,13 +48,18 @@ public class ListTest {
     @Test
     public void testProcess_ListCommand() {
         // given
-        when(manager.getTableNames()).thenReturn(new String[]{"users","test"});
+
+        Set<String> tableNames = new HashSet<String>();
+        tableNames.add("users");
+        tableNames.add("test");
+
+        when(manager.getTableNames()).thenReturn(tableNames);
 
         // when
         command.process("list");
 
         // then
-        shouldPrint("[[users, test]]");
+        shouldPrint("[[test, users]]");
     }
 
     private void shouldPrint(String expected) {

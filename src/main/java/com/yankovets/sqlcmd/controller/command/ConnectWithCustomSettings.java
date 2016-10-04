@@ -2,17 +2,21 @@ package com.yankovets.sqlcmd.controller.command;
 
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
-import java.sql.SQLException;
+@Ignore
+public class ConnectWithCustomSettings implements Command {
+  //private static String COMMAND_CONNECT_SAMPLE_1 = "connect|dbName|userName|password";
+    private static String COMMAND_CONNECT_SAMPLE_1 = "connect|sqlcmd|postgres|root";
 
-public class Connect implements Command {
-
-    private static String COMMAND_CONNECT_SAMPLE = "connect|sqlcmd|postgres|root";
+  //private static String COMMAND_CONNECT_SAMPLE_2 = "connect|driverName        |host     :port|dbName|userName|password";
+  //private static String COMMAND_CONNECT_SAMPLE_3 = "connect|driverName        |hostName      |dbName|userName|password";
+  //private static String COMMAND_CONNECT_SAMPLE_3 = "connect|jdbc:postgresql://|localhost:5432|sqlcmd|postgres|root";
 
     private DatabaseManager manager;
     private View view;
 
-    public Connect(DatabaseManager manager, View view) {
+    public ConnectWithCustomSettings(DatabaseManager manager, View view) {
         this.manager = manager;
         this.view = view;
     }
@@ -25,7 +29,7 @@ public class Connect implements Command {
 
     @Override
     public void process(String command) {
-        String[] data = command.split("[|]");
+  /*      String[] data = command.split("[|]");
         if (data.length != count()) {
             throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
                             " which split by '|' are %s, but expected %s",
@@ -43,13 +47,13 @@ public class Connect implements Command {
             view.write(String.format("Cant get connection for database:%s, user:%s because %s.",
                     database, userName,
                     e.getMessage()));
-        }
+        }*/
     }
 
 
 
     private int count() {
-        return COMMAND_CONNECT_SAMPLE.split("[|]").length;
+        return COMMAND_CONNECT_SAMPLE_1.split("[|]").length;
     }
 
 }

@@ -1,11 +1,14 @@
 package com.yankovets.sqlcmd.model;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class InMemoryDatabaseManager implements DatabaseManager {
 
     public static final String TABLE_NAME = "users"; // TODO implement multitables
 
+    private Set<String> tableNames = new HashSet<>();
     private DataSet[] data = new DataSet[1000];
     private int freeIndex = 0;
 
@@ -22,8 +25,10 @@ public class InMemoryDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public String[] getTableNames() {
-        return new String[] { TABLE_NAME, "test" };
+    public Set<String> getTableNames() {
+        tableNames.add(TABLE_NAME);
+        tableNames.add("test");
+        return tableNames;
     } // TODO to remove test
 
     @Override

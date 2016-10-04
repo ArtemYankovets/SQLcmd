@@ -50,7 +50,7 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 "Exist commands:\r\n" +
                 // help
@@ -82,7 +82,7 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // exit
                 "See you next time!\r\n", getData());
@@ -98,7 +98,7 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // list
                 "You can't use the command 'list' until you connect to database with command 'connect|databaseName|username|password'\r\n" +
@@ -117,7 +117,7 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // find|
                 "You can't use the command 'find|users' until you connect to database with command 'connect|databaseName|username|password'\r\n" +
@@ -136,7 +136,7 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // unsupported
                 "You can't use the command 'unsupported' until you connect to database with command 'connect|databaseName|username|password'\r\n" +
@@ -156,10 +156,10 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // unsupported
                 "Non exist command: unsupported\r\n" +
@@ -179,13 +179,13 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // list
-                "[users, test]\r\n" +
+                "[test, users]\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // exit
                 "See you next time!\r\n", getData());
@@ -202,10 +202,10 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // find|users
                 "-------------------------\r\n" +
@@ -228,10 +228,10 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // find|nonexistent
                 "Fail! The cause of: Command format 'find|tableName', but you taped: find|qwe|qwqw\r\n" +
@@ -254,16 +254,16 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connect|sqlcmd|postgres|root
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // list
-                "[users, test]\r\n" +
+                "[test, users]\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // connect|test|postgres|root
-                "Success!\r\n" +
+                "Success! Got connection for database: test, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // list
                 "[qwe]\r\n" +
@@ -282,7 +282,7 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connect|sqlcmd
                 "Fail! The cause of: The amount of arguments for this command, which split by '|' are 2, but expected 4\r\n" +
@@ -313,6 +313,7 @@ public class IntegrationTest {
 
         in.add("connect|sqlcmd|postgres|root");
         in.add("clear|users");
+        in.add("Y");
         in.add("create|users|id|13|name|Stiven|password|*****");
         in.add("create|users|id|14|name|Eva|password|+++++");
         in.add("find|users");
@@ -322,12 +323,14 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 //clear|users
+                "Attention! You are going to delete all data from the table 'users'. Are you sure? [ Y / N ]\r\n" +
+                //Y
                 "Table users was successfully cleared\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // create|users|id|13|name|Stiven|password|*****
@@ -359,10 +362,10 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // clear|qwe|qwqw
                 "Fail! The cause of: Command format 'clear|tableName', but you taped: clear|qwe|qwqw\r\n" +
@@ -384,10 +387,10 @@ public class IntegrationTest {
         Main.main(new String[0]);
 
         // then
-        assertEquals("Hello, user!\r\n" +
+        assertEquals("Welcome!\r\n" +
                 "Please input database name, user name and password in format: connect|database|userName|password\r\n" +
                 // connet|
-                "Success!\r\n" +
+                "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // create|users|error
                 "Fail! The cause of: Must be even amount of parameters in format 'create|tableName|column1|value1|column2|value2|...|columnN|valueN', you typed: 'create|users|error'\r\n" +

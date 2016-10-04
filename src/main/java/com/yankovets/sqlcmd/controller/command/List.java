@@ -4,8 +4,9 @@ import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 
 import java.util.Arrays;
+import java.util.Set;
 
-public class List implements Command{
+public class List implements Command {
     private DatabaseManager manager;
     private View view;
 
@@ -22,8 +23,7 @@ public class List implements Command{
 
     @Override
     public void process(String command) {
-        String[] tableNames = manager.getTableNames();
-        String message = Arrays.toString(tableNames);
-        view.write(message);
+        Set<String> tableNames = manager.getTableNames();
+        view.write(Arrays.toString(tableNames.toArray()));
     }
 }

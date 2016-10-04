@@ -3,7 +3,9 @@ package com.yankovets.sqlcmd.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,7 +15,7 @@ public abstract class DatabaseManagerTest {
     private DatabaseManager manager;
 
     @Before
-    public void setup() {
+    public void setup() throws SQLException{
         manager = getDatabaseManager();
         manager.connect("sqlcmd", "postgres", "root");
         manager.clear("users");
@@ -23,8 +25,8 @@ public abstract class DatabaseManagerTest {
 
     @Test
     public void tetsGetAllTableNames() {
-        String[] tableNames = manager.getTableNames();
-        assertEquals("[users, test]", Arrays.toString(tableNames));
+        Set<String> tableNames = manager.getTableNames();
+        assertEquals("[test, users]", Arrays.toString(tableNames.toArray()));
     }
 
     @Test

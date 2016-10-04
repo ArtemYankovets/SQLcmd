@@ -1,11 +1,14 @@
 package com.yankovets.sqlcmd.model;
 
+import java.sql.SQLException;
+import java.util.Set;
+
 public interface DatabaseManager {
     DataSet[] getTableData(String tableName);
 
-    String[] getTableNames();
+    Set<String> getTableNames();
 
-    void connect(String database, String userName, String password);
+    void connect(String database, String userName, String password) throws SQLException;
 
     void clear(String tableName);
 
