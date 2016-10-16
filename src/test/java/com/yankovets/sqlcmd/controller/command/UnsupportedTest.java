@@ -32,7 +32,7 @@ public class UnsupportedTest {
     @Test
     public void testCanProcessNotExist() {
         // when
-        command.process("'some wrong command'");
+        command.process("some wrong command");
 
         // then
         verify(view).write("Non exist command: 'some wrong command'");

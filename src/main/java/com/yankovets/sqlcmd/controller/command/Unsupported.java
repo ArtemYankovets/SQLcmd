@@ -16,6 +16,6 @@ public class Unsupported implements Command {
 
     @Override
     public void process(String command) {
-        view.write("Non exist command: " + command);
+        view.write("Non exist command: '" + command + "'");
     }
 }
