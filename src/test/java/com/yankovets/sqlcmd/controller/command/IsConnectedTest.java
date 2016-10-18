@@ -4,11 +4,10 @@ import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class IsConnectedTest {
 
@@ -38,11 +37,4 @@ public class IsConnectedTest {
         assertTrue(canProcess);
     }
 
-
-
-    private void shouldPrint(String expected) {
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(view, atLeastOnce()).write(captor.capture());
-        assertEquals(expected, captor.getAllValues().toString());
-    }
 }
