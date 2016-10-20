@@ -82,7 +82,8 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
-    public void connect(String driverName, String hostName, String database, String userName, String password) throws SQLException {
+    public void connect(String driverName, String hostName, String database, String userName,
+                        String password) throws SQLException {
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {
@@ -97,11 +98,9 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void clear(String tableName) {
+    public void clear(String tableName) throws SQLException {
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate("DELETE FROM " + tableName);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 

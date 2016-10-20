@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class ClearTest {
     }
 
     @Test
-    public void testClearTableWithTrueValidationWithConfirm() {
+    public void testClearTableWithTrueValidationWithConfirm() throws SQLException {
         // when
         String tableName = "users";
         Set<String> setOfTableNames = new HashSet<>();
@@ -43,7 +44,7 @@ public class ClearTest {
     }
 
     @Test
-    public void testClearTableWithTrueValidationWithOutConfirm() {
+    public void testClearTableWithTrueValidationWithOutConfirm() throws SQLException {
         // when
         String tableName = "users";
         Set<String> setOfTableNames = new HashSet<>();
@@ -57,7 +58,22 @@ public class ClearTest {
         verify(manager, never()).clear("users");
     }
 
+    @Test
+    public void testClearTableWithTrueValidationWithConfirmWithSQLException() throws SQLException {
+        // when
+        String tableName = "users";
+        Set<String> setOfTableNames = new HashSet<>();
+        setOfTableNames.add(tableName);
+        when(manager.getTableNames()).thenReturn(setOfTableNames);
+        when(view.read()).thenReturn("Y");
+        doThrow(new SQLException()).when(manager).clear(tableName);
+        command.process("clear|" + tableName);
 
+        // then
+        shouldPrint("[Attention! You are going to delete all data from the table 'users'. Are you sure? [ Y / N ], " +
+                    "Error in table 'users' clearing because: null]");
+//        verify(manager, never()).clear("users");
+    }
 
     @Test
     public void testClearTableWithFalseValidation() {

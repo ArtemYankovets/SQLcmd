@@ -30,7 +30,7 @@ public abstract class DatabaseManagerTest {
     }
 
     @Test
-    public void testGetTableData() {
+    public void testGetTableData() throws SQLException {
         // given
         manager.clear("users");
 
@@ -51,10 +51,9 @@ public abstract class DatabaseManagerTest {
     }
 
     @Test
-    public void testUpdateTableData() {
+    public void testUpdateTableData() throws SQLException {
         // given
         manager.clear("users");
-
 
         DataSet input = new DataSet();
         input.put("name", "Stiven");
@@ -77,7 +76,7 @@ public abstract class DatabaseManagerTest {
     }
 
     @Test
-    public void testGetColumnNames() {
+    public void testGetColumnNames() throws SQLException {
         // given
         manager.clear("users");
 
@@ -90,11 +89,8 @@ public abstract class DatabaseManagerTest {
 
     @Test
     public void testIsConnected() {
-        // given
-        // when
         // then
-       assertTrue(manager.isConnected());
-
+        assertTrue(manager.isConnected());
     }
 
 

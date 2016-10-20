@@ -3,6 +3,7 @@ package com.yankovets.sqlcmd.controller.command;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 public class Clear implements Command {
@@ -34,8 +35,12 @@ public class Clear implements Command {
                     "[ Y / N ]", tableName));
             String result = view.read().toUpperCase();
             if (result.equals("Y")) {
-                manager.clear(data[1]);
-                view.write(String.format("Table %s was successfully cleared", data[1]));
+                try {
+                    manager.clear(data[1]);
+                    view.write(String.format("Table %s was successfully cleared", data[1]));
+                } catch (SQLException e) {
+                    view.write(String.format("Error in table '%s' clearing because: %s", tableName, e.getMessage()));
+                }
             }
         }
     }
