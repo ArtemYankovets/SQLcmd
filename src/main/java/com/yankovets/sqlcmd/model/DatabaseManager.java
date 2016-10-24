@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.util.Set;
 
 public interface DatabaseManager {
-    void connect(String database, String userName, String password) throws SQLException;
+    void connect(String database,  String host, String port, String userName, String password) throws SQLException;
 
-    void create(String tableName, DataSet input) throws SQLException;
+    void createEntry(String tableName, DataSet input) throws SQLException;
 
     void createDB(String databaseName) throws SQLException;
 
