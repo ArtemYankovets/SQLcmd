@@ -5,39 +5,31 @@ import com.yankovets.sqlcmd.view.View;
 
 import java.sql.SQLException;
 
-public class DropDB implements Command {
+public class DropDB extends AbstractCommandImpl {
 
-    private final DatabaseManager manager;
-    private final View view;
-
-    public DropDB(DatabaseManager manager, View view) {
-        this.manager = manager;
-        this.view = view;
+    public DropDB(DatabaseManager databaseManager, View view) {
+        super(databaseManager, view);
     }
 
     @Override
-    public boolean canProcess(String command) {
-        return command.startsWith("dropDB|");
+    public String getCommandTemplate() {
+        return "dropDB|databaseName";
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return "for deletion database";
     }
 
     @Override
     public void process(String command) {
-        String[] databaseName = command.split("[|]");
-        if (databaseName.length != 2) {
-            throw new IllegalArgumentException("Формат команды 'dropDB|databaseName', а ты ввел: " + command);
-        }
-
+        validator.validate();
+        String databaseName = validator.getParametersOfCommandLine()[1];
         try {
-            manager.dropDB(databaseName[1]);
-            view.write("База '" + databaseName[1] + "' удалена.");
+            manager.dropDB(databaseName);
+            view.write(String.format("The database '%s' was successfully deleted", databaseName));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public String getDescription() {
-        return "\tdropBD|databaseName\r\n" +
-               "\t\tfor deletion database\r\n";
     }
 }
