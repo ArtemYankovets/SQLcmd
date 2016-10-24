@@ -2,21 +2,25 @@ package com.yankovets.sqlcmd.controller.command;
 
 import com.yankovets.sqlcmd.view.View;
 
-public class Exit implements Command {
-
-    private View view;
+public class Exit extends AbstractCommandImpl {
 
     public Exit(View view) {
-        this.view = view;
+        super(view);
     }
 
     @Override
-    public boolean canProcess(String command) {
-        return command.equals("exit");
+    public String getCommandTemplate() {
+        return "exit";
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return "for exit from application";
     }
 
     @Override
     public void process(String command) {
+        validator.validate();
         view.write("See you next time!");
         throw new ExitException();
     }
