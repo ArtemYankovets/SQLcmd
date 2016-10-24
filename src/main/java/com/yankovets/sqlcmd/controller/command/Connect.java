@@ -5,51 +5,49 @@ import com.yankovets.sqlcmd.view.View;
 
 import java.sql.SQLException;
 
-public class Connect implements Command {
+public class Connect extends AbstractCommandImpl {
 
-    private static String COMMAND_CONNECT_SAMPLE = "connect|sqlcmd|postgres|root";
+    private String commandConnectSample = "connect|sqlcmd|postgres|root";
+    private String host = "localhost";
+    private String port = "5433";
 
-    private DatabaseManager manager;
-    private View view;
-
-    public Connect(DatabaseManager manager, View view) {
-        this.manager = manager;
-        this.view = view;
+    public Connect(DatabaseManager databaseManager, View view) {
+        super(databaseManager, view);
     }
-
 
     @Override
-    public boolean canProcess(String command) {
-        return command.startsWith("connect|");
+    public String getCommandTemplate() {
+        return "connect|databaseName|userName|password|host[optional]|port[optional]";
     }
+
+    @Override
+    public String getCommandDescription() {
+        return "for connection to database, which we are planning to work with";
+    }
+
 
     @Override
     public void process(String command) {
-        String[] data = command.split("[|]");
-        if (data.length != count()) {
-            throw new IllegalArgumentException(String.format("The amount of arguments for this command," +
-                            " which split by '|' are %s, but expected %s",
-                    data.length, count()));
+        validator.checkNumberOfParameters();
+        String[] parameters = validator.getParametersOfCommandLine();
+        String databaseName = parameters[1];
+        String userName = parameters[2];
+        String password = parameters[3];
+        String host = this.host;
+        String port = this.port;
+        if ((parameters.length == 6) && (parameters[4] != null) && (parameters[5] != null)) {
+            host = parameters[4];
+            port = parameters[5];
         }
 
-        String database = data[1];
-        String userName = data[2];
-        String password = data[3];
-
         try {
-            manager.connect(database, userName, password);
-            view.write(String.format("Success! Got connection for database: %s, user: %s.", database, userName));
+            manager.connect(databaseName, host, port, userName, password);
+            view.write(String.format("Success! Got connection for database: %s, user: %s.",
+                    databaseName, userName));
         } catch (SQLException e) {
             view.write(String.format("Cant get connection for database:%s, user:%s because %s.",
-                    database, userName,
+                    databaseName, userName,
                     e.getMessage()));
         }
     }
-
-
-
-    private int count() {
-        return COMMAND_CONNECT_SAMPLE.split("[|]").length;
-    }
-
 }
