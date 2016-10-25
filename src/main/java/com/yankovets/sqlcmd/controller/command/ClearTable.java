@@ -23,21 +23,16 @@ public class ClearTable extends AbstractCommandImpl {
 
     @Override
     public void process(String command) {
-        String[] data = command.split("[|]");
-        if (data.length != 2) {
-            throw new IllegalArgumentException("Command format 'clear|tableName', but you taped: " + command);
-        }
-
-        String tableName = data[1];
-
+        validator.validate();
+        String tableName = validator.getParametersOfCommandLine()[1];
         try {
             if (checkExistenceOfTableInDB(tableName)) {
                 view.write(String.format("Attention! You are going to delete all data from the table '%s'. Are you sure? " +
                         "[ Y / N ]", tableName));
                 String result = view.read().toUpperCase();
                 if (result.equals("Y")) {
-                    manager.clear(data[1]);
-                    view.write(String.format("Table %s was successfully cleared", data[1]));
+                    manager.clear(tableName);
+                    view.write(String.format("Table '%s' was successfully cleared", tableName));
                 }
             }
         } catch (SQLException e) {
