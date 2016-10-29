@@ -17,15 +17,15 @@ public abstract class DatabaseManagerTest {
     @Before
     public void setup() throws SQLException{
         manager = getDatabaseManager();
-        manager.connect("sqlcmd", "postgres", "root");
+        manager.connect("sqlcmd", "localhost", "5433", "postgres", "root");
         manager.clear("users");
     }
 
     public abstract DatabaseManager getDatabaseManager();
 
     @Test
-    public void tetsGetAllTableNames() {
-        Set<String> tableNames = manager.getTableNames();
+    public void tetsGetAllTableNames() throws SQLException {
+        Set<String> tableNames = manager.getTablesNames();
         assertEquals("[test, users]", Arrays.toString(tableNames.toArray()));
     }
 
@@ -39,7 +39,7 @@ public abstract class DatabaseManagerTest {
         input.put("name", "Stiven");
         input.put("password", "pass");
         input.put("id", 13);
-        manager.create("users", input);
+        manager.createEntry("users", input);
 
         // then
         DataSet[] users = manager.getTableData("users");
@@ -59,7 +59,7 @@ public abstract class DatabaseManagerTest {
         input.put("name", "Stiven");
         input.put("password", "pass");
         input.put("id", 13);
-        manager.create("users", input);
+        manager.createEntry("users", input);
 
         // when
         DataSet newValue = new DataSet();
@@ -81,10 +81,10 @@ public abstract class DatabaseManagerTest {
         manager.clear("users");
 
         // when
-        String[] columnNames = manager.getTableColumns("users");
+        Set<String> columnNames = manager.getTableColumns("users");
 
         // then
-        assertEquals("[name, password, id]", Arrays.toString(columnNames));
+        assertEquals("[name, password, id]", columnNames.toString());
     }
 
     @Test

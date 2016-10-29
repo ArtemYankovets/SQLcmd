@@ -21,16 +21,19 @@ public class Help implements Command {
         view.write("\tconnect|databaseName|username|password");
         view.write("\t\tfor connection to database, which we planning to work with");
 
-        view.write("\tlist");
+        view.write("\tdatabases");
+        view.write("\t\tfor getting all databases, witch you got connection");
+
+        view.write("\ttables");
         view.write("\t\tfor getting all tables from database, witch you got connection");
+
+        view.write("\tcreateEntry|tableName|column1|value1|column2|value2|...|columnN|valueN");
+        view.write("\t\tfor creating notes in database");
 
         view.write("\tclear|tableName");
         view.write("\t\tfor all table clearing");
 
-        view.write("\tcreate|tableName|column1|value1|column2|value2|...|columnN|valueN");
-        view.write("\t\tfor creating notes in database");
-
-        view.write("\tfind|tableName");
+        view.write("\tshow|tableName");
         view.write("\t\tfor getting the data from table 'tableName'");
 
         view.write("\thelp");
@@ -38,5 +41,16 @@ public class Help implements Command {
 
         view.write("\texit");
         view.write("\t\tfor exit from application");
+    }
+
+    @Override
+    public String getCommandTemplate() {
+        return null;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return "\texit\r\n" +
+                "\t\tfor exit from application\r\n";
     }
 }

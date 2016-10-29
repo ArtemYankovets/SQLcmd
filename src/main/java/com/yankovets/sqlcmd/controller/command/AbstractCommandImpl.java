@@ -1,6 +1,6 @@
 package com.yankovets.sqlcmd.controller.command;
 
-import com.yankovets.sqlcmd.controller.command.util.CommandValidation;
+import com.yankovets.sqlcmd.controller.command.utility.CommandValidation;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
 

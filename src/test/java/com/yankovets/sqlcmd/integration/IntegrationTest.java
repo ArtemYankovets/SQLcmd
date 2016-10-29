@@ -1,6 +1,6 @@
 package com.yankovets.sqlcmd.integration;
 
-import com.yankovets.sqlcmd.controller.Main;
+import com.yankovets.sqlcmd.Main;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.model.JDBCDatabaseManager;
 import org.junit.Before;
@@ -60,7 +60,7 @@ public class IntegrationTest {
                 "\t\tfor getting all tables from database, witch you got connection\r\n" +
                 "\tclear|tableName\r\n" +
                 "\t\tfor all table clearing\r\n" +
-                "\tcreate|tableName|column1|value1|column2|value2|...|columnN|valueN\r\n" +
+                "\tcreateEntry|tableName|column1|value1|column2|value2|...|columnN|valueN\r\n" +
                 "\t\tfor creating notes in database\r\n" +
                 "\tfind|tableName\r\n" +
                 "\t\tfor getting the data from table 'tableName'\r\n" +
@@ -303,19 +303,19 @@ public class IntegrationTest {
 //        user1.put("id", "13");
 //        user1.put("name", "Stiven");
 //        user1.put("password", "*****");
-//        databasemanager.create("users", user1);
+//        databasemanager.createEntry("users", user1);
 //
 //        DataSet user2 = new DataSet();
 //        user2.put("id", "14");
 //        user2.put("name", "Eva");
 //        user2.put("password", "+++++");
-//        databasemanager.create("users", user2);
+//        databasemanager.createEntry("users", user2);
 
         in.add("connect|sqlcmd|postgres|root");
         in.add("clear|users");
         in.add("Y");
-        in.add("create|users|id|13|name|Stiven|password|*****");
-        in.add("create|users|id|14|name|Eva|password|+++++");
+        in.add("createEntry|users|id|13|name|Stiven|password|*****");
+        in.add("createEntry|users|id|14|name|Eva|password|+++++");
         in.add("find|users");
         in.add("exit");
 
@@ -333,10 +333,10 @@ public class IntegrationTest {
                 //Y
                 "Table users was successfully cleared\r\n" +
                 "Input command (or 'help' for help):\r\n" +
-                // create|users|id|13|name|Stiven|password|*****
+                // createEntry|users|id|13|name|Stiven|password|*****
                 "Note {names:[id, name, password], values:[13, Stiven, *****]} was successfully created in table 'users'\r\n" +
                 "Input command (or 'help' for help):\r\n" +
-                // create|users|id|14|name|Eva|password|+++++
+                // createEntry|users|id|14|name|Eva|password|+++++
                 "Note {names:[id, name, password], values:[14, Eva, +++++]} was successfully created in table 'users'\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // find|users
@@ -380,7 +380,7 @@ public class IntegrationTest {
         // given
 
         in.add("connect|sqlcmd|postgres|root");
-        in.add("create|users|error");
+        in.add("createEntry|users|error");
         in.add("exit");
 
         // when
@@ -392,8 +392,8 @@ public class IntegrationTest {
                 // connet|
                 "Success! Got connection for database: sqlcmd, user: postgres.\r\n" +
                 "Input command (or 'help' for help):\r\n" +
-                // create|users|error
-                "Fail! The cause of: Must be even amount of parameters in format 'create|tableName|column1|value1|column2|value2|...|columnN|valueN', you typed: 'create|users|error'\r\n" +
+                // createEntry|users|error
+                "Fail! The cause of: Must be even amount of parameters in format 'createEntry|tableName|column1|value1|column2|value2|...|columnN|valueN', you typed: 'createEntry|users|error'\r\n" +
                 "Try again!\r\n" +
                 "Input command (or 'help' for help):\r\n" +
                 // exit

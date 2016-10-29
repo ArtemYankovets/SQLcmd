@@ -7,7 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.util.HashSet;
+import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertFalse;
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
-public class FindTest {
+public class GetTableDataTest {
 
     private DatabaseManager manager;
     private View view;
@@ -26,19 +27,25 @@ public class FindTest {
     public void setUp() {
         manager = mock(DatabaseManager.class);
         view = mock(View.class);
-        command = new Find(manager, view);
+        command = new GetTableData(manager, view);
+    }
+
+    private Set<String> getFilledSet(String ... args) {
+        Set<String> set = new LinkedHashSet<>();
+        for (String arg: args) {
+            set.add(arg);
+        }
+        return set;
     }
 
     @Test
-    public void testPrintTableData() {
-        // given
+    public void testPrintTableData() throws SQLException {
         String tableName = "users";
-        Set<String> setOfTableNames = new HashSet<>();
-        setOfTableNames.add(tableName);
-        when(manager.getTableNames()).thenReturn(setOfTableNames);
 
+        // given
+        when(manager.getTablesNames()).thenReturn(getFilledSet(tableName));
         when(manager.getTableColumns(tableName)).
-                thenReturn(new String[]{"id", "name", "password"});
+                thenReturn(getFilledSet("id", "name", "password"));
 
         DataSet user1 = new DataSet();
         user1.put("id", 12);
@@ -68,15 +75,13 @@ public class FindTest {
     }
 
     @Test
-    public void testPrintTableDataWithOneColumn() {
-        // given
+    public void testPrintTableDataWithOneColumn() throws SQLException {
         String tableName = "test";
-        Set<String> setOfTableNames = new HashSet<>();
-        setOfTableNames.add(tableName);
-        when(manager.getTableNames()).thenReturn(setOfTableNames);
 
+        // given
+        when(manager.getTablesNames()).thenReturn(getFilledSet(tableName));
         when(manager.getTableColumns(tableName)).
-                thenReturn(new String[]{"id"});
+                thenReturn(getFilledSet("id"));
 
         DataSet user1 = new DataSet();
         user1.put("id", 12);
@@ -100,16 +105,13 @@ public class FindTest {
     }
 
     @Test
-    public void testPrintEmptyTableData() {
-        // given
+    public void testPrintEmptyTableData() throws SQLException {
         String tableName = "users";
-        Set<String> setOfTableNames = new HashSet<>();
-        setOfTableNames.add(tableName);
-        when(manager.getTableNames()).thenReturn(setOfTableNames);
 
+        // given
+        when(manager.getTablesNames()).thenReturn(getFilledSet(tableName));
         when(manager.getTableColumns(tableName)).
-                     thenReturn(new String[]{"id", "name", "password"});
-
+                     thenReturn(getFilledSet("id", "name", "password"));
         when(manager.getTableData(tableName)).thenReturn(new DataSet[0]);
 
         // when
@@ -180,7 +182,7 @@ public class FindTest {
     }
 
     @Test
-    public void testValidationTableName() {
+    public void testValidationTableName() throws SQLException {
         // when
         command.process("find|qwe");
 

@@ -2,10 +2,9 @@ package com.yankovets.sqlcmd.controller.command;
 
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
-@Ignore
-public class ConnectWithCustomSettings implements Command {
+
+public class ConnectWithCustomSettings {
   //private static String COMMAND_CONNECT_SAMPLE_1 = "connect|dbName|userName|password";
     private static String COMMAND_CONNECT_SAMPLE_1 = "connect|sqlcmd|postgres|root";
 
@@ -22,12 +21,12 @@ public class ConnectWithCustomSettings implements Command {
     }
 
 
-    @Override
+
     public boolean canProcess(String command) {
         return command.startsWith("connect|");
     }
 
-    @Override
+
     public void process(String command) {
   /*      String[] data = command.split("[|]");
         if (data.length != count()) {
@@ -50,6 +49,10 @@ public class ConnectWithCustomSettings implements Command {
         }*/
     }
 
+
+    public String getCommandDescription() {
+        return null;
+    }
 
 
     private int count() {

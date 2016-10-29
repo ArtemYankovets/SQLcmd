@@ -13,13 +13,19 @@ public class MainController {
         this.view = view;
         this.commands = new Command[]{
                 new Connect(manager, view),
+                new CreateDB(manager, view),
+                new CreateTable(manager, view),
+                new CreateEntry(manager, view),
+                new DropDB(manager, view),
+                new DropTable(manager, view),
                 new Help(view),
                 new Exit(view),
                 new IsConnected(manager, view),
-                new List(manager, view),
-                new Clear(manager, view),
-                new Create(manager, view),
-                new Find(manager, view),
+                new GetTableNames(manager, view),
+                new GetDBNames(manager, view),
+                new ClearTable(manager, view),
+                new CreateEntry(manager, view),
+                new GetTableData(manager, view),
                 new Unsupported(view)
         };
     }

@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.*;
 import static org.mockito.Mockito.*;
 
-public class ClearTest {
+public class ClearTableTest {
 
     private DatabaseManager manager;
     private View view;
@@ -24,7 +24,7 @@ public class ClearTest {
     public void setUp() {
         manager = mock(DatabaseManager.class);
         view = mock(View.class);
-        command = new Clear(manager, view);
+        command = new ClearTable(manager, view);
     }
 
     @Test
@@ -33,7 +33,7 @@ public class ClearTest {
         String tableName = "users";
         Set<String> setOfTableNames = new HashSet<>();
         setOfTableNames.add(tableName);
-        when(manager.getTableNames()).thenReturn(setOfTableNames);
+        when(manager.getTablesNames()).thenReturn(setOfTableNames);
         when(view.read()).thenReturn("Y");
         command.process("clear|" + tableName);
 
@@ -49,7 +49,7 @@ public class ClearTest {
         String tableName = "users";
         Set<String> setOfTableNames = new HashSet<>();
         setOfTableNames.add(tableName);
-        when(manager.getTableNames()).thenReturn(setOfTableNames);
+        when(manager.getTablesNames()).thenReturn(setOfTableNames);
         when(view.read()).thenReturn("N");
         command.process("clear|" + tableName);
 
@@ -64,7 +64,7 @@ public class ClearTest {
         String tableName = "users";
         Set<String> setOfTableNames = new HashSet<>();
         setOfTableNames.add(tableName);
-        when(manager.getTableNames()).thenReturn(setOfTableNames);
+        when(manager.getTablesNames()).thenReturn(setOfTableNames);
         when(view.read()).thenReturn("Y");
         doThrow(new SQLException()).when(manager).clear(tableName);
         command.process("clear|" + tableName);
@@ -76,9 +76,9 @@ public class ClearTest {
     }
 
     @Test
-    public void testClearTableWithFalseValidation() {
+    public void testClearTableWithFalseValidation() throws SQLException {
         // when
-        when(manager.getTableNames()).thenReturn(new HashSet<String>());
+        when(manager.getTablesNames()).thenReturn(new HashSet<String>());
         when(view.read()).thenReturn("N");
         command.process("clear|qwe");
 

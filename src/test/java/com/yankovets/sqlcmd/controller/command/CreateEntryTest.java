@@ -6,15 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.SQLException;
 
 import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class ListTest {
+public class CreateEntryTest {
 
     private View view;
     private Command command;
@@ -24,16 +22,17 @@ public class ListTest {
     public void setUp() {
         manager = mock(DatabaseManager.class);
         view = mock(View.class);
-        command = new List(manager, view);
+        command = new GetTableNames(manager, view);
     }
 
     @Test
-    public void testCanProcessListString() {
+    public void testCanProcessCreateString() {
         // when
-        boolean canProcess = command.canProcess("list");
+        boolean canProcess = command.canProcess("createEntry|");
 
         // then
-        assertTrue(canProcess);
+//        assertTrue(canProcess);
+
     }
 
     @Test
@@ -46,20 +45,15 @@ public class ListTest {
     }
 
     @Test
-    public void testProcess_ListCommand() {
+    public void testProcess_CreateCommand() throws SQLException {
         // given
-
-        Set<String> tableNames = new HashSet<String>();
-        tableNames.add("users");
-        tableNames.add("test");
-
-        when(manager.getTableNames()).thenReturn(tableNames);
+        when(manager.getTablesNames().toArray()).thenReturn(new String[]{"users","test"});
 
         // when
-        command.process("list");
+        command.process("createEntry|");
 
         // then
-        shouldPrint("[[test, users]]");
+        shouldPrint("[[users, test]]");
     }
 
     private void shouldPrint(String expected) {

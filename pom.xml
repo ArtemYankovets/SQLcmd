@@ -27,6 +27,11 @@
             <version>9.1-901.jdbc4</version>
         </dependency>
         <dependency>
+            <groupId>org.ow2.sirocco</groupId>
+            <artifactId>sirocco-text-table-formatter</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>

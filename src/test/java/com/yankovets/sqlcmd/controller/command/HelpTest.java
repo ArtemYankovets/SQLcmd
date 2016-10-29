@@ -55,7 +55,7 @@ public class HelpTest {
                     "\t\tfor getting all tables from database, witch you got connection, " +
                     "\tclear|tableName, " +
                     "\t\tfor all table clearing, " +
-                    "\tcreate|tableName|column1|value1|column2|value2|...|columnN|valueN, " +
+                    "\tcreateEntry|tableName|column1|value1|column2|value2|...|columnN|valueN, " +
                     "\t\tfor creating notes in database, " +
                     "\tfind|tableName, " +
                     "\t\tfor getting the data from table 'tableName', " +

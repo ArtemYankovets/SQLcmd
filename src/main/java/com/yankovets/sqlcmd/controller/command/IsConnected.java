@@ -22,4 +22,14 @@ public class IsConnected implements Command {
         view.write(String.format("You can't use the command '%s' until you connect to database" +
                 " with command 'connect|databaseName|username|password'" , command));
     }
+
+    @Override
+    public String getCommandTemplate() {
+        return null;
+    }
+
+    @Override
+    public String getCommandDescription() {
+        return null;
+    }
 }

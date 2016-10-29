@@ -13,7 +13,6 @@ public class CommandValidation {
     }
 
     public void validate() {
-
         commandFormatValidation();
     }
 
@@ -39,6 +38,16 @@ public class CommandValidation {
                     "you typed: '%s'", commandLine));
         }
     }
+
+   /* private boolean checkExistenceOfElementInDB (String string, DatabaseManager manager) throws SQLException {
+        Set<String> setOfTableNames = manager.getTablesNames();
+        if (!setOfTableNames.contains(string)) {
+            view.write(String.format("There is not the table with name '%s' in database.", tableName));
+            return false;
+        } else {
+            return true;
+        }
+    }*/
 
     public String[] getParametersOfCommandLine() {
         return PARAMETERS_OF_COMMAND_LINE;

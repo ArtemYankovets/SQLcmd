@@ -73,7 +73,7 @@ public class ConnectTest {
 
         // when
         when(manager.isConnected()).thenReturn(false);
-        doThrow(new SQLException()).when(manager).connect("sqlcmd", "postgres", "qwe");
+        doThrow(new SQLException()).when(manager).connect("sqlcmd", "localhost", "5433", "postgres", "qwe");
         command.process("connect|sqlcmd|postgres|qwe");
 
         // then

@@ -1,7 +1,9 @@
 package com.yankovets.sqlcmd.model;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class InMemoryDatabaseManager implements DatabaseManager {
@@ -25,14 +27,14 @@ public class InMemoryDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public Set<String> getTableNames() {
+    public Set<String> getTablesNames() {
         tableNames.add(TABLE_NAME);
         tableNames.add("test");
         return tableNames;
     } // TODO to remove test
 
     @Override
-    public void connect(String database, String userName, String password) {
+    public void connect(String database,  String host, String port, String userName, String password) {
         // do nothing
     }
 
@@ -44,9 +46,19 @@ public class InMemoryDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void create(String tableName, DataSet input) {
+    public void createEntry(String tableName, DataSet input) {
         validateTable(tableName);
         data[freeIndex++] = input;
+    }
+
+    @Override
+    public void createDB(String databaseName) throws SQLException {
+
+    }
+
+    @Override
+    public void createTable(String tableName) throws SQLException {
+
     }
 
     @Override
@@ -61,8 +73,24 @@ public class InMemoryDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public String[] getTableColumns(String tableName) {
-        return new String[] {"name", "password", "id"};
+    public void dropDB(String databaseName) throws SQLException {
+
+    }
+
+    @Override
+    public void dropTable(String tableName) throws SQLException {
+
+    }
+
+    @Override
+    public Set<String> getDatabasesNames() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Set<String>/*String[]*/ getTableColumns(String tableName) {
+//        return new String[] {"name", "password", "id"};
+        return new LinkedHashSet<String>();
     }
 
     @Override

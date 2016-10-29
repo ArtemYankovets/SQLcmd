@@ -26,13 +26,10 @@ public class JDBCDatabaseManager implements DatabaseManager {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Please add jdbc jar to project.", e);
         }
-
         if (connection != null) {
             connection.close();
         }
-
         connection = getConnection(databaseName, host, port, userName, password);
-
     }
 
     private Connection getConnection (String databaseName, String host, String port, String userName, String password) throws SQLException {

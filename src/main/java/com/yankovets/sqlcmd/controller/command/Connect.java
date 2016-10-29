@@ -17,12 +17,12 @@ public class Connect extends AbstractCommandImpl {
 
     @Override
     public String getCommandTemplate() {
-        return "connect|databaseName|userName|password|host[optional]|port[optional]";
+        return "connect|databaseName|userName|password";
     }
 
     @Override
     public String getCommandDescription() {
-        return "for connection to database, which we are planning to work with";
+        return "for connection to database, which we are planning to work with. Optional you can add '|host|port' to command line";
     }
 
 

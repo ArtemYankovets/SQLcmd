@@ -1,5 +1,6 @@
-package com.yankovets.sqlcmd.controller;
+package com.yankovets.sqlcmd;
 
+import com.yankovets.sqlcmd.controller.MainController;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.model.JDBCDatabaseManager;
 import com.yankovets.sqlcmd.view.Console;
