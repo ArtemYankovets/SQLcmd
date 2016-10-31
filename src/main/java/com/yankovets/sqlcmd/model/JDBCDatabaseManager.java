@@ -10,6 +10,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public static final String DATABASE_URL = "jdbc:postgresql://localhost:5433/";
 
     private Connection connection;
+    private boolean connectionStatus;
 
     @Override
     public void clear(String tableName) throws SQLException {
@@ -46,8 +47,15 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
+    public void disconnectFromDB () throws SQLException {
+        connectionStatus = false;
+        connection.close();
+    }
+
+    @Override
     public boolean isConnected() {
-        return connection != null;
+        connectionStatus = connection != null;
+        return connectionStatus;
     }
 
     private void checkConnection() throws SQLException{

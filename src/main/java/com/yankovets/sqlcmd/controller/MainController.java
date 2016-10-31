@@ -3,6 +3,7 @@ package com.yankovets.sqlcmd.controller;
 import com.yankovets.sqlcmd.controller.command.*;
 import com.yankovets.sqlcmd.model.DatabaseManager;
 import com.yankovets.sqlcmd.view.View;
+import sun.plugin2.main.client.DisconnectedExecutionContext;
 
 public class MainController {
 
@@ -14,17 +15,18 @@ public class MainController {
         this.commands = new Command[]{
                 new Connect(manager, view),
                 new CreateDB(manager, view),
-                new CreateTable(manager, view),
-                new CreateEntry(manager, view),
+                new GetDBNames(manager, view),
                 new DropDB(manager, view),
-                new DropTable(manager, view),
                 new Help(view),
                 new Exit(view),
+                new Disconnect(manager, view),
                 new IsConnected(manager, view),
+                new CreateTable(manager, view),
                 new GetTableNames(manager, view),
+                new DropTable(manager, view),
                 new GetDBNames(manager, view),
-                new ClearTable(manager, view),
                 new CreateEntry(manager, view),
+                new ClearTable(manager, view),
                 new GetTableData(manager, view),
                 new Unsupported(view)
         };

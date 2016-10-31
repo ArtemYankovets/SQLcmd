@@ -12,6 +12,8 @@ public interface DatabaseManager {
 
     void createTable(String tableName) throws SQLException;
 
+    void disconnectFromDB() throws SQLException;
+
     void update(String tableName, int id, DataSet newValue) throws SQLException;
 
     void dropDB(String databaseName) throws SQLException;

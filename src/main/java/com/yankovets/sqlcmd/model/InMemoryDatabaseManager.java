@@ -62,6 +62,11 @@ public class InMemoryDatabaseManager implements DatabaseManager {
     }
 
     @Override
+    public void disconnectFromDB() throws SQLException {
+        // do nothing
+    }
+
+    @Override
     public void update(String tableName, int id, DataSet newValue) {
         for (int index = 0; index < freeIndex; index++) {
             if (data[index].get("id") instanceof Integer) {

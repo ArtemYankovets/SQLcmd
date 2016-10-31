@@ -16,6 +16,7 @@ public class Help extends AbstractCommandImpl {
         super(view);
         this.commands = new ArrayList<>(Arrays.asList(
                 new Connect(manager, view),
+                new Disconnect(manager, view),
                 new GetDBNames(manager, view),
                 new GetTableNames(manager, view),
                 new CreateDB(manager, view),
